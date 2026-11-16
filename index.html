@@ -49,7 +49,7 @@
     </header>
 
     <!-- CONTENIDO PRINCIPAL -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8 space-y-8">
 
         <!-- MODAL DE ACCESO EXCLUSIVO DE ADMINISTRADOR -->
         <div id="authModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -61,7 +61,6 @@
                     <button onclick="cerrarModalAcceso()" class="text-slate-400 hover:text-slate-600 cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
                 </div>
 
-                <!-- FORMULARIO DE INICIO DE SESIÓN -->
                 <form id="formLogin" onsubmit="verificarLogin(event)" class="space-y-4">
                     <p class="text-xs text-slate-500">Acceso exclusivo para el administrador autorizado.</p>
                     <div>
@@ -81,7 +80,6 @@
                     </div>
                 </form>
 
-                <!-- FORMULARIO DE RECUPERACIÓN / RESTABLECIMIENTO -->
                 <form id="formRecuperar" onsubmit="procesarRecuperacion(event)" class="hidden space-y-4">
                     <p class="text-xs text-slate-600">Ingresa tu <strong>correo electrónico</strong> registrado para verificar tu identidad:</p>
                     <div>
@@ -107,6 +105,19 @@
 
         <!-- VISTA PÚBLICA -->
         <div id="vistaPublica" class="space-y-8">
+            
+            <!-- SECCIÓN DE PRESENTACIÓN DEL PROGRAMA (DINÁMICA) -->
+            <div id="seccionAcercaPublica" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center gap-6">
+                <div class="p-4 bg-emerald-50 text-emerald-700 rounded-2xl text-4xl flex-shrink-0">
+                    <i class="fa-solid fa-earth-americas"></i>
+                </div>
+                <div class="space-y-2 text-center md:text-left">
+                    <span id="pubAcercaBadge" class="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">Acerca del Programa</span>
+                    <h2 id="pubAcercaTitulo" class="text-xl md:text-2xl font-bold text-slate-800">Reciclaje con Propósito</h2>
+                    <p id="pubAcercaTexto" class="text-sm text-slate-600 leading-relaxed">Transformamos la gestión ambiental en una fuente de trabajo sostenible y educación comunitaria, midiendo el impacto real en la reducción de la huella de carbono en cada jornada.</p>
+                </div>
+            </div>
+
             <div class="bg-gradient-to-r from-emerald-700 to-teal-800 rounded-2xl p-6 md:p-8 text-white shadow-lg flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="space-y-2 text-center md:text-left">
                     <span class="bg-emerald-600 text-emerald-100 text-xs px-3 py-1 rounded-full uppercase font-semibold tracking-wider">Reportes Oficiales en Vivo</span>
@@ -143,24 +154,30 @@
                 <div id="pubListaMateriales" class="space-y-4"></div>
             </div>
 
-            <!-- CENTRO DE INFORMES CON BUSCADOR TIPO ACORDEÓN -->
+            <!-- CENTRO DE INFORMES CON BUSCADOR INTELIGENTE Y SELECTOR RÁPIDO -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
                 <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
                     <button onclick="toggleAcordeonBuscador()" class="w-full px-5 py-4 flex justify-between items-center text-left font-bold text-slate-800 hover:bg-slate-100 transition cursor-pointer">
                         <span class="flex items-center gap-2 text-base">
-                            <i class="fa-solid fa-magnifying-glass text-emerald-600"></i> Buscador Avanzado de Informes Oficiales
+                            <i class="fa-solid fa-magnifying-glass text-emerald-600"></i> Buscador Avanzado y Selector Rápido de Informes
                         </span>
                         <i id="iconoAcordeon" class="fa-solid fa-chevron-down text-slate-500 transition-transform duration-300"></i>
                     </button>
-                    <div id="contenidoAcordeon" class="hidden p-5 border-t border-slate-200 bg-white grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div id="contenidoAcordeon" class="hidden p-5 border-t border-slate-200 bg-white grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Buscar por Fecha de Jornada:</label>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Seleccionar Informe Directo:</label>
+                            <select id="selectInformeRapido" onchange="seleccionarInformeDirecto(this.value)" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white">
+                                <option value="">-- Todos los informes --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Buscar por Fecha:</label>
                             <input type="date" id="filtroFecha" oninput="filtrarInformesPublicos()" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                         </div>
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1">Buscar por N° de Informe o Lugar:</label>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Buscar por Lugar o Palabra:</label>
                             <div class="flex gap-2">
-                                <input type="text" id="filtroTexto" oninput="filtrarInformesPublicos()" placeholder="ej. Reporte N° 1 o Baruta" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                <input type="text" id="filtroTexto" oninput="filtrarInformesPublicos()" placeholder="ej. Baruta o Reporte N° 1" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                                 <button onclick="limpiarFiltrosBusqueda()" class="px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs rounded-lg font-medium transition cursor-pointer" title="Limpiar filtros">Limpiar</button>
                             </div>
                         </div>
@@ -187,6 +204,36 @@
                 <button onclick="cerrarAdmin()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition cursor-pointer">
                     <i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar Sesión
                 </button>
+            </div>
+
+            <!-- GESTIÓN DE CONTENIDO Y ORDEN DE LA PÁGINA PRINCIPAL -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                    <i class="fa-solid fa-pen-to-square text-emerald-600"></i> Gestión de la Sección "Acerca del Programa"
+                </h3>
+                <form onsubmit="actualizarAcercaConfig(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Etiqueta Superior (Badge):</label>
+                            <input type="text" id="editAcercaBadge" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Título de la Sección:</label>
+                            <input type="text" id="editAcercaTitulo" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Descripción del Programa / Proyecto:</label>
+                        <textarea id="editAcercaTexto" rows="3" required class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
+                    </div>
+                    <div class="flex items-center justify-between pt-2 border-t">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="editAcercaVisible" class="w-4 h-4 text-emerald-600 rounded">
+                            <span class="text-xs font-semibold text-slate-700">Mostrar esta sección en la página principal</span>
+                        </label>
+                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium transition cursor-pointer">Guardar Cambios de Presentación</button>
+                    </div>
+                </form>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -396,6 +443,12 @@
         let jornadas = [];
         let adminCredenciales = null;
         let logoCorporativoBase64 = null;
+        let acercaConfig = {
+            badge: "Acerca del Programa",
+            titulo: "Reciclaje con Propósito",
+            texto: "Transformamos la gestión ambiental en una fuente de trabajo sostenible y educación comunitaria, midiendo el impacto real en la reducción de la huella de carbono en cada jornada.",
+            visible: true
+        };
 
         const jornadasExcelBase = [
             {
@@ -443,14 +496,18 @@
         async function iniciarSincronizacionNube() {
             const statusEl = document.getElementById('cloudStatus');
 
-            // Cargar configuración inicial (Logo y Credenciales)
+            // Cargar configuración inicial (Logo, Credenciales y Sección Acerca)
             onSnapshot(doc(db, "configuracion", "general"), (docSnap) => {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     adminCredenciales = data.adminCredenciales || null;
                     logoCorporativoBase64 = data.logoCorporativoBase64 || null;
+                    if (data.acercaConfig) {
+                        acercaConfig = data.acercaConfig;
+                    }
                 }
                 aplicarLogoCorporativo();
+                aplicarAcercaConfig();
             }, (err) => {
                 console.error("Error en config:", err);
             });
@@ -477,15 +534,14 @@
                     jornadas.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Cambiar estado a En Vivo exitosamente
                 statusEl.innerHTML = `<i class="fa-solid fa-cloud"></i> En Vivo`;
                 statusEl.className = "inline-flex items-center gap-1 bg-emerald-900/80 text-emerald-300 px-2 py-0.5 rounded-full text-[10px]";
 
                 renderVistaPublica();
                 renderTablaAdmin();
             }, (error) => {
-                console.error("Error de Firebase (Firestore Rules):", error);
-                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Error de Permisos`;
+                console.error("Error de Firebase:", error);
+                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Error de Conexión`;
                 statusEl.className = "inline-flex items-center gap-1 bg-rose-900/80 text-rose-200 px-2 py-0.5 rounded-full text-[10px]";
             });
         }
@@ -507,6 +563,38 @@
                 if (pdfCell) pdfCell.innerHTML = '🌱';
             }
         }
+
+        function aplicarAcercaConfig() {
+            const seccion = document.getElementById('seccionAcercaPublica');
+            document.getElementById('pubAcercaBadge').innerText = acercaConfig.badge;
+            document.getElementById('pubAcercaTitulo').innerText = acercaConfig.titulo;
+            document.getElementById('pubAcercaTexto').innerText = acercaConfig.texto;
+
+            if (acercaConfig.visible) {
+                seccion.classList.remove('hidden');
+            } else {
+                seccion.classList.add('hidden');
+            }
+
+            // Sincronizar formulario del admin
+            document.getElementById('editAcercaBadge').value = acercaConfig.badge;
+            document.getElementById('editAcercaTitulo').value = acercaConfig.titulo;
+            document.getElementById('editAcercaTexto').value = acercaConfig.texto;
+            document.getElementById('editAcercaVisible').checked = acercaConfig.visible;
+        }
+
+        window.actualizarAcercaConfig = async function(event) {
+            event.preventDefault();
+            acercaConfig = {
+                badge: document.getElementById('editAcercaBadge').value.trim(),
+                titulo: document.getElementById('editAcercaTitulo').value.trim(),
+                texto: document.getElementById('editAcercaTexto').value.trim(),
+                visible: document.getElementById('editAcercaVisible').checked
+            };
+
+            await setDoc(doc(db, "configuracion", "general"), { acercaConfig }, { merge: true });
+            alert('¡Sección "Acerca del Programa" actualizada con éxito!');
+        };
 
         window.subirLogoArchivo = function(event) {
             const file = event.target.files[0];
@@ -530,11 +618,8 @@
 
         window.abrirModalAcceso = function() {
             const modal = document.getElementById('authModal');
-            const fLog = document.getElementById('formLogin');
-            const fRec = document.getElementById('formRecuperar');
-
-            fLog.classList.remove('hidden');
-            fRec.classList.add('hidden');
+            document.getElementById('formLogin').classList.remove('hidden');
+            document.getElementById('formRecuperar').classList.add('hidden');
             modal.classList.remove('hidden');
         };
 
@@ -649,12 +734,26 @@
         window.limpiarFiltrosBusqueda = function() {
             document.getElementById('filtroFecha').value = '';
             document.getElementById('filtroTexto').value = '';
+            document.getElementById('selectInformeRapido').value = '';
             renderizarListaInformes(jornadas);
+        }
+
+        window.seleccionarInformeDirecto = function(indexStr) {
+            if (indexStr === "") {
+                renderizarListaInformes(jornadas);
+                return;
+            }
+            const idx = Number(indexStr);
+            const jornadaSeleccionada = jornadas[idx];
+            if (jornadaSeleccionada) {
+                renderizarListaInformes([jornadaSeleccionada]);
+            }
         }
 
         window.filtrarInformesPublicos = function() {
             const fechaFiltro = document.getElementById('filtroFecha').value;
             const textoFiltro = document.getElementById('filtroTexto').value.toLowerCase().trim();
+            document.getElementById('selectInformeRapido').value = '';
 
             const filtradas = jornadas.filter((j, index) => {
                 const nroInforme = `reporte n° ${jornadas.length - index}`;
@@ -669,6 +768,16 @@
             });
 
             renderizarListaInformes(filtradas);
+        }
+
+        function actualizarSelectorInformesRapidos() {
+            const select = document.getElementById('selectInformeRapido');
+            select.innerHTML = `<option value="">-- Todos los informes (${jornadas.length}) --</option>`;
+
+            jornadas.forEach((j, index) => {
+                const nro = jornadas.length - index;
+                select.innerHTML += `<option value="${index}">Reporte N° ${nro} - ${j.fecha} (${j.lugar.substring(0, 30)}...)</option>`;
+            });
         }
 
         function renderVistaPublica() {
@@ -699,6 +808,7 @@
                 `;
             }
 
+            actualizarSelectorInformesRapidos();
             renderizarListaInformes(jornadas);
         }
 
