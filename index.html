@@ -51,7 +51,7 @@
     <!-- CONTENIDO PRINCIPAL -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
 
-        <!-- MODAL DE SEGURIDAD / LOGIN / CONFIGURACIÓN INICIAL -->
+        <!-- MODAL DE SEGURIDAD / LOGIN -->
         <div id="authModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
                 <div class="flex justify-between items-center mb-4 border-b pb-3">
@@ -61,17 +61,16 @@
                     <button onclick="cerrarModalAcceso()" class="text-slate-400 hover:text-slate-600 cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
                 </div>
 
-                <!-- VISTA A: CREACIÓN DE CREDENCIALES (SOLO LA PRIMERA VEZ) -->
                 <form id="formRegistroInicial" onsubmit="crearCredencialesIniciales(event)" class="hidden space-y-4">
                     <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl text-xs text-amber-800">
-                        <i class="fa-solid fa-circle-info mr-1"></i> <strong>Configuración Inicial en la Nube:</strong> Crea tu usuario y clave secreta de administrador. Se guardarán de forma centralizada.
+                        <i class="fa-solid fa-circle-info mr-1"></i> <strong>Configuración Inicial en la Nube:</strong> Crea tu usuario y clave secreta.
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre de Usuario:</label>
                         <input type="text" id="regUsuario" required placeholder="ej. admin_ltsc" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-700 mb-1">Correo Electrónico de Recuperación:</label>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Correo Electrónico:</label>
                         <input type="email" id="regCorreo" required placeholder="ej. info@latierrasecalienta.org" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                     </div>
                     <div>
@@ -88,7 +87,6 @@
                     </div>
                 </form>
 
-                <!-- VISTA B: INICIO DE SESIÓN -->
                 <form id="formLogin" onsubmit="verificarLogin(event)" class="hidden space-y-4">
                     <p class="text-xs text-slate-500">Ingresa tus credenciales privadas para gestionar las jornadas.</p>
                     <div>
@@ -108,9 +106,8 @@
                     </div>
                 </form>
 
-                <!-- VISTA C: RECUPERACIÓN POR CORREO -->
                 <form id="formRecuperar" onsubmit="procesarRecuperacion(event)" class="hidden space-y-4">
-                    <p class="text-xs text-slate-600">Ingresa tu <strong>correo electrónico</strong> registrado para verificar tu identidad:</p>
+                    <p class="text-xs text-slate-600">Ingresa tu <strong>correo electrónico</strong> registrado:</p>
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Correo Electrónico:</label>
                         <input type="email" id="recCorreo" required placeholder="correo@ejemplo.com" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
@@ -184,7 +181,7 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div>
                     <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-gauge text-emerald-600 mr-2"></i> Panel de Administración (Sincronizado en la Nube)</h2>
-                    <p class="text-sm text-slate-500">Bienvenido, <strong id="adminNombreDisplay" class="text-emerald-700">Administrador</strong>. Todos tus cambios se reflejan en tiempo real en todos los dispositivos.</p>
+                    <p class="text-sm text-slate-500">Bienvenido, <strong id="adminNombreDisplay" class="text-emerald-700">Administrador</strong>.</p>
                 </div>
                 <button onclick="cerrarAdmin()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition cursor-pointer">
                     <i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar Sesión
@@ -269,7 +266,7 @@
             </div>
 
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                <h3 class="text-lg font-bold text-slate-800 mb-4"><i class="fa-solid fa-list-check text-emerald-600 mr-2"></i> Jornadas Registradas en la Nube</h3>
+                <h3 class="text-lg font-bold text-slate-800 mb-4"><i class="fa-solid fa-list-check text-emerald-600 mr-2"></i> Jornadas Registradas</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-slate-600">
                         <thead class="bg-slate-50 text-slate-700 uppercase text-xs font-semibold">
@@ -291,58 +288,59 @@
         <p>La Tierra se Calienta, A.C. | Depósito Legal: MI2024000503 | <a href="https://www.latierrasecalienta.org" class="text-emerald-600 hover:underline">www.latierrasecalienta.org</a></p>
     </footer>
 
-    <!-- PLANTILLA PDF -->
-    <div id="pdfTemplate" class="hidden bg-white p-8 max-w-[800px] mx-auto text-slate-800">
-        <div class="border-b-2 border-emerald-700 pb-4 mb-6 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div id="pdfLogoContainer" class="w-12 h-12 rounded-full border border-emerald-200 flex items-center justify-center overflow-hidden text-emerald-800 text-xl">
-                    <i class="fa-solid fa-seedling"></i>
+    <!-- PLANTILLA PDF (Visible temporalmente en pantalla auxiliar fuera de vista para asegurar renderizado correcto) -->
+    <div style="position: absolute; left: -9999px; top: 0; width: 800px;">
+        <div id="pdfTemplate" class="bg-white p-8 text-slate-800">
+            <div class="border-b-2 border-emerald-700 pb-4 mb-6 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div id="pdfLogoContainer" class="w-12 h-12 rounded-full border border-emerald-200 flex items-center justify-center overflow-hidden text-emerald-800 text-xl">
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-emerald-800">La Tierra se Calienta, A.C.</h1>
+                        <p class="text-xs text-slate-500">Informe oficial de jornada | J-40706070-8</p>
+                    </div>
                 </div>
-                <div>
-                    <h1 class="text-2xl font-bold text-emerald-800">La Tierra se Calienta, A.C.</h1>
-                    <p class="text-xs text-slate-500">Informe oficial de jornada | J-40706070-8</p>
+                <div class="text-right">
+                    <span id="pdfNroReporte" class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded font-semibold">Reporte</span>
+                    <p id="pdfFechaEmision" class="text-xs text-slate-500 mt-1">Caracas, Venezuela</p>
                 </div>
             </div>
-            <div class="text-right">
-                <span id="pdfNroReporte" class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded font-semibold">Reporte</span>
-                <p id="pdfFechaEmision" class="text-xs text-slate-500 mt-1">Caracas, Venezuela</p>
+
+            <div class="bg-emerald-50 p-4 rounded-xl mb-6 border border-emerald-100">
+                <h3 class="font-bold text-emerald-900 text-sm mb-1"><i class="fa-solid fa-location-dot mr-1"></i> Información General</h3>
+                <p><strong class="text-slate-700">Fecha:</strong> <span id="pdfJornadaFecha">--</span></p>
+                <p><strong class="text-slate-700">Lugar:</strong> <span id="pdfJornadaLugar">--</span></p>
             </div>
-        </div>
 
-        <div class="bg-emerald-50 p-4 rounded-xl mb-6 border border-emerald-100">
-            <h3 class="font-bold text-emerald-900 text-sm mb-1"><i class="fa-solid fa-location-dot mr-1"></i> Información General</h3>
-            <p><strong class="text-slate-700">Fecha:</strong> <span id="pdfJornadaFecha">--</span></p>
-            <p><strong class="text-slate-700">Lugar:</strong> <span id="pdfJornadaLugar">--</span></p>
-        </div>
-
-        <h3 class="font-bold text-slate-800 mb-3 text-base border-b pb-1">Estadísticas</h3>
-        <div class="mb-6">
-            <p class="text-sm text-slate-600 mb-2">Total recolectado: <strong id="pdfJornadaTotal" class="text-emerald-700 text-lg">0 kg</strong></p>
-            <div id="pdfMaterialesLista" class="space-y-2"></div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4 mb-6">
-            <div class="bg-slate-50 p-4 rounded-xl border">
-                <h4 class="font-bold text-slate-800 text-xs uppercase mb-1">Propósito</h4>
-                <p class="text-xs text-slate-600">La educación cambia al mundo y el reciclaje es fuente de trabajo sostenible.</p>
+            <h3 class="font-bold text-slate-800 mb-3 text-base border-b pb-1">Estadísticas</h3>
+            <div class="mb-6">
+                <p class="text-sm text-slate-600 mb-2">Total recolectado: <strong id="pdfJornadaTotal" class="text-emerald-700 text-lg">0 kg</strong></p>
+                <div id="pdfMaterialesLista" class="space-y-2"></div>
             </div>
-            <div class="bg-slate-50 p-4 rounded-xl border">
-                <h4 class="font-bold text-slate-800 text-xs uppercase mb-1">Alianzas</h4>
-                <p class="text-xs text-slate-600">Multirecicla, Brocicla, Philips y voluntariado comunitario.</p>
-            </div>
-        </div>
 
-        <div class="border-t pt-4 text-center text-[10px] text-slate-400">
-            <p>La Tierra se Calienta, A.C. www.latierrasecalienta.org | Depósito Legal: MI2024000503</p>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-slate-50 p-4 rounded-xl border">
+                    <h4 class="font-bold text-slate-800 text-xs uppercase mb-1">Propósito</h4>
+                    <p class="text-xs text-slate-600">La educación cambia al mundo y el reciclaje es fuente de trabajo sostenible.</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border">
+                    <h4 class="font-bold text-slate-800 text-xs uppercase mb-1">Alianzas</h4>
+                    <p class="text-xs text-slate-600">Multirecicla, Brocicla, Philips y voluntariado comunitario.</p>
+                </div>
+            </div>
+
+            <div class="border-t pt-4 text-center text-[10px] text-slate-400">
+                <p>La Tierra se Calienta, A.C. www.latierrasecalienta.org | Depósito Legal: MI2024000503</p>
+            </div>
         </div>
     </div>
 
-    <!-- FIREBASE SDK Y SCRIPT DE SINCRONIZACIÓN EN TIEMPO REAL -->
+    <!-- SCRIPT FIREBASE Y PDF -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, doc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, getDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // Configuración oficial de tu proyecto Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDxgRcjJ_QY7sJtNPndqE2oGRwXTI_QzhM",
             authDomain: "estadisticasreciclaje.firebaseapp.com",
@@ -396,29 +394,22 @@
             electro: { nombre: 'Electrodomésticos', color: 'bg-indigo-600', factorCO2: 2.0 }
         };
 
-        // Escucha en tiempo real a la colección de jornadas en Firestore
         function iniciarSincronizacionNube() {
             const statusEl = document.getElementById('cloudStatus');
 
-            // 1. Escuchar configuración global (logo y credenciales)
             onSnapshot(doc(db, "configuracion", "general"), (docSnap) => {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     adminCredenciales = data.adminCredenciales || null;
                     logoCorporativoBase64 = data.logoCorporativoBase64 || null;
-                } else {
-                    adminCredenciales = null;
-                    logoCorporativoBase64 = null;
                 }
                 aplicarLogoCorporativo();
             });
 
-            // 2. Escuchar jornadas en tiempo real
             const q = query(collection(db, "jornadas"), orderBy("fecha", "desc"));
             onSnapshot(q, async (snapshot) => {
-                statusEl.innerHTML = `<i class="fa-solid fa-cloud-check"></i> En Vivo`;
+                statusEl.innerHTML = `<i class="fa-solid fa-cloud"></i> En Vivo`;
                 if (snapshot.empty) {
-                    // Si la base de datos está vacía por primera vez, subimos las jornadas base del Excel
                     const checkSnap = await getDocs(collection(db, "jornadas"));
                     if (checkSnap.empty) {
                         for (const j of jornadasExcelBase) {
@@ -434,8 +425,8 @@
                     renderTablaAdmin();
                 }
             }, (error) => {
-                console.error("Error conectando a Firestore:", error);
-                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-400"></i> Revisar Reglas Firebase`;
+                console.error("Error:", error);
+                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-400"></i> Error Firestore`;
             });
         }
 
@@ -463,13 +454,12 @@
             const reader = new FileReader();
             reader.onload = async function(e) {
                 const base64 = e.target.result;
-                // Redimensionar ligeramente si es muy pesado para Firestore (límite 1MB por doc)
                 if (base64.length > 800000) {
-                    alert('La imagen es muy pesada. Por favor elige un archivo de imagen más ligero (menor a 500 KB).');
+                    alert('La imagen es muy pesada. Elige una menor a 500 KB.');
                     return;
                 }
                 await setDoc(doc(db, "configuracion", "general"), { logoCorporativoBase64: base64 }, { merge: true });
-                alert('¡Logo corporativo actualizado en la nube para todos los dispositivos!');
+                alert('¡Logo actualizado!');
             };
             reader.readAsDataURL(file);
         };
@@ -491,7 +481,7 @@
             correoVerificadoTemp = false;
 
             if (!adminCredenciales) {
-                title.innerHTML = `<i class="fa-solid fa-key text-emerald-600 mr-2"></i> Configurar Acceso Administrador`;
+                title.innerHTML = `<i class="fa-solid fa-key text-emerald-600 mr-2"></i> Configurar Administrador`;
                 fReg.classList.remove('hidden');
             } else {
                 title.innerHTML = `<i class="fa-solid fa-shield-halved text-emerald-600 mr-2"></i> Acceso de Administrador`;
@@ -521,7 +511,7 @@
             adminCredenciales = nuevasCredenciales;
             cerrarModalAcceso();
             entrarAlPanelAdmin();
-            alert('¡Credenciales guardadas en la nube con éxito!');
+            alert('¡Credenciales creadas con éxito!');
         };
 
         window.verificarLogin = function(event) {
@@ -543,7 +533,6 @@
             document.getElementById('formRecuperar').classList.remove('hidden');
             document.getElementById('nuevaClaveBox').classList.add('hidden');
             document.getElementById('btnRecuperarSubmit').innerText = 'Verificar Correo';
-            document.getElementById('authModalTitle').innerHTML = `<i class="fa-solid fa-envelope-open-text text-emerald-600 mr-2"></i> Recuperar Acceso`;
             correoVerificadoTemp = false;
         };
 
@@ -559,13 +548,13 @@
                     document.getElementById('recNuevaClave').required = true;
                     document.getElementById('btnRecuperarSubmit').innerText = 'Guardar Nueva Clave';
                 } else {
-                    alert('El correo electrónico no coincide con el registrado.');
+                    alert('El correo electrónico no coincide.');
                 }
             } else {
                 const nuevaClave = document.getElementById('recNuevaClave').value;
                 adminCredenciales.clave = nuevaClave;
                 await setDoc(doc(db, "configuracion", "general"), { adminCredenciales }, { merge: true });
-                alert('¡Contraseña restablecida en la nube con éxito!');
+                alert('¡Contraseña restablecida!');
                 abrirModalAcceso();
             }
         };
@@ -587,14 +576,12 @@
 
             adminCredenciales.usuario = nuevoUsuario;
             adminCredenciales.correo = nuevoCorreo;
-            if (nuevaClave.trim() !== '') {
-                adminCredenciales.clave = nuevaClave;
-            }
+            if (nuevaClave.trim() !== '') adminCredenciales.clave = nuevaClave;
 
             await setDoc(doc(db, "configuracion", "general"), { adminCredenciales }, { merge: true });
             document.getElementById('adminNombreDisplay').innerText = adminCredenciales.usuario;
             document.getElementById('editAdminClave').value = '';
-            alert('¡Credenciales actualizadas en la nube correctamente!');
+            alert('¡Credenciales actualizadas!');
         };
 
         window.cerrarAdmin = function() {
@@ -657,7 +644,7 @@
             contenedorInformes.innerHTML = '';
 
             if (jornadas.length === 0) {
-                contenedorInformes.innerHTML = `<p class="text-sm text-slate-500 col-span-3">Cargando informes desde la nube...</p>`;
+                contenedorInformes.innerHTML = `<p class="text-sm text-slate-500 col-span-3">Cargando informes...</p>`;
                 return;
             }
 
@@ -683,7 +670,7 @@
             tbody.innerHTML = '';
 
             if (jornadas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">No hay jornadas registradas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">No hay jornadas.</td></tr>`;
                 return;
             }
 
@@ -734,10 +721,10 @@
                     await updateDoc(doc(db, "jornadas", idEdit), datosJornada);
                 }
                 limpiarFormulario();
-                alert('¡Jornada guardada en Firebase y actualizada en todos los dispositivos al instante!');
+                alert('¡Jornada guardada en la nube con éxito!');
             } catch (e) {
                 console.error(e);
-                alert('Error al guardar en la nube. Verifica las reglas de Firebase.');
+                alert('Error al guardar.');
             } finally {
                 btn.disabled = false;
                 btn.innerText = 'Guardar en la Nube';
@@ -764,7 +751,7 @@
         };
 
         window.eliminarJornada = async function(id) {
-            if (confirm('¿Está seguro de eliminar esta jornada de la base de datos?')) {
+            if (confirm('¿Está seguro de eliminar esta jornada?')) {
                 await deleteDoc(doc(db, "jornadas", id));
             }
         };
@@ -802,19 +789,16 @@
             }
 
             const elementoPDF = document.getElementById('pdfTemplate');
-            elementoPDF.classList.remove('hidden');
 
             const opt = {
                 margin:       10,
                 filename:     `Informe_Reciclaje_${j.fecha}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().from(elementoPDF).set(opt).save().then(() => {
-                elementoPDF.classList.add('hidden');
-            });
+            html2pdf().from(elementoPDF).set(opt).save();
         };
 
         iniciarSincronizacionNube();
