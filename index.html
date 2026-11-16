@@ -29,13 +29,15 @@
                 </div>
                 <div>
                     <h1 class="text-xl font-bold tracking-tight">La Tierra se Calienta, A.C.</h1>
-                    <p class="text-xs text-emerald-200">Programa: Reciclaje con Propósito | J-40706070-8</p>
+                    <p class="text-xs text-emerald-200 flex items-center gap-2">
+                        <span>Programa: Reciclaje con Propósito | J-40706070-8</span>
+                        <span id="cloudStatus" class="inline-flex items-center gap-1 bg-emerald-900/80 text-emerald-300 px-2 py-0.5 rounded-full text-[10px]">
+                            <i class="fa-solid fa-cloud"></i> Conectando...
+                        </span>
+                    </p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="forzarActualizacionCache()" title="Actualizar datos y limpiar caché" class="px-3 py-2 bg-emerald-700 hover:bg-emerald-600 rounded-lg text-sm transition shadow-sm border border-emerald-600 cursor-pointer flex items-center gap-1.5">
-                    <i class="fa-solid fa-rotate"></i> <span class="hidden sm:inline">Refrescar</span>
-                </button>
                 <button onclick="cambiarVista('publico')" id="btnPublico" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 rounded-lg text-sm font-medium transition shadow-sm border border-emerald-600 cursor-pointer">
                     <i class="fa-solid fa-globe mr-2"></i> Vista Pública
                 </button>
@@ -62,7 +64,7 @@
                 <!-- VISTA A: CREACIÓN DE CREDENCIALES (SOLO LA PRIMERA VEZ) -->
                 <form id="formRegistroInicial" onsubmit="crearCredencialesIniciales(event)" class="hidden space-y-4">
                     <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl text-xs text-amber-800">
-                        <i class="fa-solid fa-circle-info mr-1"></i> <strong>Configuración Inicial:</strong> Crea tu usuario y clave secreta de administrador.
+                        <i class="fa-solid fa-circle-info mr-1"></i> <strong>Configuración Inicial en la Nube:</strong> Crea tu usuario y clave secreta de administrador. Se guardarán de forma centralizada.
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre de Usuario:</label>
@@ -134,7 +136,7 @@
         <div id="vistaPublica" class="space-y-8">
             <div class="bg-gradient-to-r from-emerald-700 to-teal-800 rounded-2xl p-6 md:p-8 text-white shadow-lg flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="space-y-2 text-center md:text-left">
-                    <span class="bg-emerald-600 text-emerald-100 text-xs px-3 py-1 rounded-full uppercase font-semibold tracking-wider">Reportes Oficiales</span>
+                    <span class="bg-emerald-600 text-emerald-100 text-xs px-3 py-1 rounded-full uppercase font-semibold tracking-wider">Reportes Oficiales en Vivo</span>
                     <h2 class="text-2xl md:text-3xl font-bold">Estadísticas de Jornadas de Reciclaje</h2>
                     <p class="text-emerald-100 text-sm max-w-xl">Consulta los totales acumulados por material, el impacto ambiental y descarga los informes oficiales en PDF.</p>
                 </div>
@@ -181,23 +183,18 @@
         <div id="vistaAdmin" class="hidden space-y-8">
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div>
-                    <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-gauge text-emerald-600 mr-2"></i> Panel de Administración</h2>
-                    <p class="text-sm text-slate-500">Bienvenido, <strong id="adminNombreDisplay" class="text-emerald-700">Administrador</strong>.</p>
+                    <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-gauge text-emerald-600 mr-2"></i> Panel de Administración (Sincronizado en la Nube)</h2>
+                    <p class="text-sm text-slate-500">Bienvenido, <strong id="adminNombreDisplay" class="text-emerald-700">Administrador</strong>. Todos tus cambios se reflejan en tiempo real en todos los dispositivos.</p>
                 </div>
-                <div class="flex items-center gap-3">
-                    <button onclick="forzarActualizacionCache()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 shadow-sm">
-                        <i class="fa-solid fa-rotate"></i> Forzar Recarga Total
-                    </button>
-                    <button onclick="cerrarAdmin()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition cursor-pointer">
-                        <i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar Sesión
-                    </button>
-                </div>
+                <button onclick="cerrarAdmin()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition cursor-pointer">
+                    <i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar Sesión
+                </button>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
                     <h3 class="text-base font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
-                        <i class="fa-solid fa-image text-emerald-600"></i> Logo Corporativo
+                        <i class="fa-solid fa-image text-emerald-600"></i> Logo Corporativo Global
                     </h3>
                     <div class="flex items-center gap-4">
                         <div id="adminLogoPreview" class="w-16 h-16 rounded-full border-2 border-emerald-200 flex items-center justify-center bg-slate-50 overflow-hidden text-emerald-700 text-2xl">
@@ -239,7 +236,7 @@
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <h3 id="formTitulo" class="text-lg font-bold text-slate-800 mb-4"><i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> Registrar Nueva Jornada</h3>
                 <form id="jornadaForm" onsubmit="guardarJornada(event)" class="space-y-6">
-                    <input type="hidden" id="jornadaIndex" value="-1">
+                    <input type="hidden" id="jornadaIdEdit" value="">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Fecha:</label>
@@ -266,13 +263,13 @@
 
                     <div class="flex justify-end gap-3 pt-4 border-t">
                         <button type="button" onclick="limpiarFormulario()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium cursor-pointer">Limpiar</button>
-                        <button type="submit" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium shadow-sm cursor-pointer">Guardar Jornada</button>
+                        <button type="submit" id="btnGuardarJornada" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium shadow-sm cursor-pointer">Guardar en la Nube</button>
                     </div>
                 </form>
             </div>
 
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-                <h3 class="text-lg font-bold text-slate-800 mb-4"><i class="fa-solid fa-list-check text-emerald-600 mr-2"></i> Jornadas Registradas</h3>
+                <h3 class="text-lg font-bold text-slate-800 mb-4"><i class="fa-solid fa-list-check text-emerald-600 mr-2"></i> Jornadas Registradas en la Nube</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-slate-600">
                         <thead class="bg-slate-50 text-slate-700 uppercase text-xs font-semibold">
@@ -340,11 +337,30 @@
         </div>
     </div>
 
-    <!-- SCRIPT -->
-    <script>
-        const VERSION_APP = "2026.11.16-v6"; // Versión para sincronización global automática
+    <!-- FIREBASE SDK Y SCRIPT DE SINCRONIZACIÓN EN TIEMPO REAL -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, doc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, getDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-        // Base de datos de jornadas predeterminadas sincronizadas
+        // Configuración oficial de tu proyecto Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxgRcjJ_QY7sJtNPndqE2oGRwXTI_QzhM",
+            authDomain: "estadisticasreciclaje.firebaseapp.com",
+            projectId: "estadisticasreciclaje",
+            storageBucket: "estadisticasreciclaje.firebasestorage.app",
+            messagingSenderId: "721700479488",
+            appId: "1:721700479488:web:f10c075d090541cbfcaee5",
+            measurementId: "G-WJNKJE5ZGZ"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let jornadas = [];
+        let adminCredenciales = null;
+        let logoCorporativoBase64 = null;
+        let correoVerificadoTemp = false;
+
         const jornadasExcelBase = [
             {
                 fecha: '2025-12-13',
@@ -368,22 +384,6 @@
             }
         ];
 
-        function verificarVersionCache() {
-            const cacheActual = localStorage.getItem('ltsc_app_version');
-            if (cacheActual !== VERSION_APP) {
-                // Sincronización automática: si cambia la versión, aseguramos que carguen los datos base oficiales
-                localStorage.setItem('jornadas_reciclaje', JSON.stringify(jornadasExcelBase));
-                localStorage.setItem('ltsc_app_version', VERSION_APP);
-            }
-        }
-
-        verificarVersionCache();
-
-        let jornadas = JSON.parse(localStorage.getItem('jornadas_reciclaje')) || jornadasExcelBase;
-        let adminCredenciales = JSON.parse(localStorage.getItem('ltsc_admin_auth')) || null;
-        let logoCorporativoBase64 = localStorage.getItem('ltsc_logo_corp') || null;
-        let correoVerificadoTemp = false;
-
         const materialesMeta = {
             vidrio: { nombre: 'Vidrio', color: 'bg-green-600', factorCO2: 0.5 },
             plastico: { nombre: 'Plástico', color: 'bg-amber-400', factorCO2: 1.5 },
@@ -396,16 +396,47 @@
             electro: { nombre: 'Electrodomésticos', color: 'bg-indigo-600', factorCO2: 2.0 }
         };
 
-        function init() {
-            aplicarLogoCorporativo();
-            renderVistaPublica();
-            renderTablaAdmin();
-        }
+        // Escucha en tiempo real a la colección de jornadas en Firestore
+        function iniciarSincronizacionNube() {
+            const statusEl = document.getElementById('cloudStatus');
 
-        function forzarActualizacionCache() {
-            if (confirm('¿Deseas refrescar la aplicación y sincronizar los datos en tiempo real?')) {
-                window.location.reload(true);
-            }
+            // 1. Escuchar configuración global (logo y credenciales)
+            onSnapshot(doc(db, "configuracion", "general"), (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    adminCredenciales = data.adminCredenciales || null;
+                    logoCorporativoBase64 = data.logoCorporativoBase64 || null;
+                } else {
+                    adminCredenciales = null;
+                    logoCorporativoBase64 = null;
+                }
+                aplicarLogoCorporativo();
+            });
+
+            // 2. Escuchar jornadas en tiempo real
+            const q = query(collection(db, "jornadas"), orderBy("fecha", "desc"));
+            onSnapshot(q, async (snapshot) => {
+                statusEl.innerHTML = `<i class="fa-solid fa-cloud-check"></i> En Vivo`;
+                if (snapshot.empty) {
+                    // Si la base de datos está vacía por primera vez, subimos las jornadas base del Excel
+                    const checkSnap = await getDocs(collection(db, "jornadas"));
+                    if (checkSnap.empty) {
+                        for (const j of jornadasExcelBase) {
+                            await addDoc(collection(db, "jornadas"), j);
+                        }
+                    }
+                } else {
+                    jornadas = [];
+                    snapshot.forEach((doc) => {
+                        jornadas.push({ id: doc.id, ...doc.data() });
+                    });
+                    renderVistaPublica();
+                    renderTablaAdmin();
+                }
+            }, (error) => {
+                console.error("Error conectando a Firestore:", error);
+                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-400"></i> Revisar Reglas Firebase`;
+            });
         }
 
         function aplicarLogoCorporativo() {
@@ -426,26 +457,28 @@
             }
         }
 
-        function subirLogoArchivo(event) {
+        window.subirLogoArchivo = function(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
-            reader.onload = function(e) {
-                logoCorporativoBase64 = e.target.result;
-                localStorage.setItem('ltsc_logo_corp', logoCorporativoBase64);
-                aplicarLogoCorporativo();
-                alert('¡Logo corporativo actualizado!');
+            reader.onload = async function(e) {
+                const base64 = e.target.result;
+                // Redimensionar ligeramente si es muy pesado para Firestore (límite 1MB por doc)
+                if (base64.length > 800000) {
+                    alert('La imagen es muy pesada. Por favor elige un archivo de imagen más ligero (menor a 500 KB).');
+                    return;
+                }
+                await setDoc(doc(db, "configuracion", "general"), { logoCorporativoBase64: base64 }, { merge: true });
+                alert('¡Logo corporativo actualizado en la nube para todos los dispositivos!');
             };
             reader.readAsDataURL(file);
-        }
+        };
 
-        function restaurarLogoDefecto() {
-            localStorage.removeItem('ltsc_logo_corp');
-            logoCorporativoBase64 = null;
-            aplicarLogoCorporativo();
-        }
+        window.restaurarLogoDefecto = async function() {
+            await setDoc(doc(db, "configuracion", "general"), { logoCorporativoBase64: null }, { merge: true });
+        };
 
-        function abrirModalAcceso() {
+        window.abrirModalAcceso = function() {
             const modal = document.getElementById('authModal');
             const fReg = document.getElementById('formRegistroInicial');
             const fLog = document.getElementById('formLogin');
@@ -465,13 +498,13 @@
                 fLog.classList.remove('hidden');
             }
             modal.classList.remove('hidden');
-        }
+        };
 
-        function cerrarModalAcceso() {
+        window.cerrarModalAcceso = function() {
             document.getElementById('authModal').classList.add('hidden');
-        }
+        };
 
-        function crearCredencialesIniciales(event) {
+        window.crearCredencialesIniciales = async function(event) {
             event.preventDefault();
             const usuario = document.getElementById('regUsuario').value.trim();
             const correo = document.getElementById('regCorreo').value.trim().toLowerCase();
@@ -483,14 +516,15 @@
                 return;
             }
 
-            adminCredenciales = { usuario, correo, clave };
-            localStorage.setItem('ltsc_admin_auth', JSON.stringify(adminCredenciales));
+            const nuevasCredenciales = { usuario, correo, clave };
+            await setDoc(doc(db, "configuracion", "general"), { adminCredenciales: nuevasCredenciales }, { merge: true });
+            adminCredenciales = nuevasCredenciales;
             cerrarModalAcceso();
             entrarAlPanelAdmin();
-            alert('¡Credenciales creadas con éxito!');
-        }
+            alert('¡Credenciales guardadas en la nube con éxito!');
+        };
 
-        function verificarLogin(event) {
+        window.verificarLogin = function(event) {
             event.preventDefault();
             const user = document.getElementById('loginUsuario').value.trim();
             const pass = document.getElementById('loginClave').value;
@@ -502,18 +536,18 @@
             } else {
                 alert('Usuario o contraseña secreta incorrectos.');
             }
-        }
+        };
 
-        function mostrarRecuperacion() {
+        window.mostrarRecuperacion = function() {
             document.getElementById('formLogin').classList.add('hidden');
             document.getElementById('formRecuperar').classList.remove('hidden');
             document.getElementById('nuevaClaveBox').classList.add('hidden');
             document.getElementById('btnRecuperarSubmit').innerText = 'Verificar Correo';
             document.getElementById('authModalTitle').innerHTML = `<i class="fa-solid fa-envelope-open-text text-emerald-600 mr-2"></i> Recuperar Acceso`;
             correoVerificadoTemp = false;
-        }
+        };
 
-        function procesarRecuperacion(event) {
+        window.procesarRecuperacion = async function(event) {
             event.preventDefault();
             const correoIngresado = document.getElementById('recCorreo').value.trim().toLowerCase();
 
@@ -530,11 +564,11 @@
             } else {
                 const nuevaClave = document.getElementById('recNuevaClave').value;
                 adminCredenciales.clave = nuevaClave;
-                localStorage.setItem('ltsc_admin_auth', JSON.stringify(adminCredenciales));
-                alert('¡Contraseña restablecida con éxito!');
+                await setDoc(doc(db, "configuracion", "general"), { adminCredenciales }, { merge: true });
+                alert('¡Contraseña restablecida en la nube con éxito!');
                 abrirModalAcceso();
             }
-        }
+        };
 
         function entrarAlPanelAdmin() {
             document.getElementById('vistaPublica').classList.add('hidden');
@@ -545,7 +579,7 @@
             renderTablaAdmin();
         }
 
-        function actualizarCredenciales(event) {
+        window.actualizarCredenciales = async function(event) {
             event.preventDefault();
             const nuevoUsuario = document.getElementById('editAdminUsuario').value.trim();
             const nuevoCorreo = document.getElementById('editAdminCorreo').value.trim().toLowerCase();
@@ -557,23 +591,23 @@
                 adminCredenciales.clave = nuevaClave;
             }
 
-            localStorage.setItem('ltsc_admin_auth', JSON.stringify(adminCredenciales));
+            await setDoc(doc(db, "configuracion", "general"), { adminCredenciales }, { merge: true });
             document.getElementById('adminNombreDisplay').innerText = adminCredenciales.usuario;
             document.getElementById('editAdminClave').value = '';
-            alert('¡Credenciales actualizadas correctamente!');
-        }
+            alert('¡Credenciales actualizadas en la nube correctamente!');
+        };
 
-        function cerrarAdmin() {
+        window.cerrarAdmin = function() {
             document.getElementById('vistaAdmin').classList.add('hidden');
             document.getElementById('vistaPublica').classList.remove('hidden');
-        }
+        };
 
-        function cambiarVista(vista) {
+        window.cambiarVista = function(vista) {
             if (vista === 'publico') {
                 document.getElementById('vistaPublica').classList.remove('hidden');
                 document.getElementById('vistaAdmin').classList.add('hidden');
             }
-        }
+        };
 
         function calcularTotalesGenerales() {
             let totales = { vidrio: 0, plastico: 0, papel: 0, tetrapack: 0, aceite: 0, pilas: 0, aluminio: 0, anime: 0, electro: 0 };
@@ -623,7 +657,7 @@
             contenedorInformes.innerHTML = '';
 
             if (jornadas.length === 0) {
-                contenedorInformes.innerHTML = `<p class="text-sm text-slate-500 col-span-3">No hay informes disponibles todavía.</p>`;
+                contenedorInformes.innerHTML = `<p class="text-sm text-slate-500 col-span-3">Cargando informes desde la nube...</p>`;
                 return;
             }
 
@@ -662,7 +696,7 @@
                         <td class="px-4 py-3 font-semibold text-emerald-700">${totalJornada.toFixed(2)} kg</td>
                         <td class="px-4 py-3 text-center space-x-2">
                             <button onclick="editarJornada(${index})" class="px-3 py-1 bg-amber-100 text-amber-800 hover:bg-amber-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-pen"></i> Editar</button>
-                            <button onclick="eliminarJornada(${index})" class="px-3 py-1 bg-rose-100 text-rose-800 hover:bg-rose-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                            <button onclick="eliminarJornada('${j.id}')" class="px-3 py-1 bg-rose-100 text-rose-800 hover:bg-rose-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-trash"></i> Eliminar</button>
                             <button onclick="descargarInformePDF(${index})" class="px-3 py-1 bg-emerald-100 text-emerald-800 hover:bg-emerald-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-file-pdf"></i> PDF</button>
                         </td>
                     </tr>
@@ -670,10 +704,14 @@
             });
         }
 
-        function guardarJornada(event) {
+        window.guardarJornada = async function(event) {
             event.preventDefault();
-            const index = document.getElementById('jornadaIndex').value;
-            const nuevaJornada = {
+            const btn = document.getElementById('btnGuardarJornada');
+            btn.disabled = true;
+            btn.innerText = 'Guardando...';
+
+            const idEdit = document.getElementById('jornadaIdEdit').value;
+            const datosJornada = {
                 fecha: document.getElementById('inputFecha').value,
                 lugar: document.getElementById('inputLugar').value,
                 materiales: {
@@ -689,21 +727,26 @@
                 }
             };
 
-            if (index === '-1') {
-                jornadas.unshift(nuevaJornada);
-            } else {
-                jornadas[index] = nuevaJornada;
+            try {
+                if (idEdit === '') {
+                    await addDoc(collection(db, "jornadas"), datosJornada);
+                } else {
+                    await updateDoc(doc(db, "jornadas", idEdit), datosJornada);
+                }
+                limpiarFormulario();
+                alert('¡Jornada guardada en Firebase y actualizada en todos los dispositivos al instante!');
+            } catch (e) {
+                console.error(e);
+                alert('Error al guardar en la nube. Verifica las reglas de Firebase.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Guardar en la Nube';
             }
+        };
 
-            localStorage.setItem('jornadas_reciclaje', JSON.stringify(jornadas));
-            limpiarFormulario();
-            init();
-            alert('¡Jornada guardada y sincronizada globalmente!');
-        }
-
-        function editarJornada(index) {
+        window.editarJornada = function(index) {
             const j = jornadas[index];
-            document.getElementById('jornadaIndex').value = index;
+            document.getElementById('jornadaIdEdit').value = j.id;
             document.getElementById('inputFecha').value = j.fecha;
             document.getElementById('inputLugar').value = j.lugar;
             document.getElementById('matVidrio').value = j.materiales.vidrio;
@@ -718,23 +761,21 @@
 
             document.getElementById('formTitulo').innerHTML = `<i class="fa-solid fa-pen-to-square text-emerald-600 mr-2"></i> Editando Jornada (${j.fecha})`;
             window.scrollTo({ top: 400, behavior: 'smooth' });
-        }
+        };
 
-        function eliminarJornada(index) {
-            if (confirm('¿Está seguro de eliminar esta jornada?')) {
-                jornadas.splice(index, 1);
-                localStorage.setItem('jornadas_reciclaje', JSON.stringify(jornadas));
-                init();
+        window.eliminarJornada = async function(id) {
+            if (confirm('¿Está seguro de eliminar esta jornada de la base de datos?')) {
+                await deleteDoc(doc(db, "jornadas", id));
             }
-        }
+        };
 
-        function limpiarFormulario() {
+        window.limpiarFormulario = function() {
             document.getElementById('jornadaForm').reset();
-            document.getElementById('jornadaIndex').value = '-1';
+            document.getElementById('jornadaIdEdit').value = '';
             document.getElementById('formTitulo').innerHTML = `<i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> Registrar Nueva Jornada`;
-        }
+        };
 
-        function descargarInformePDF(index) {
+        window.descargarInformePDF = function(index) {
             const j = jornadas[index];
             let totalJornada = Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
 
@@ -774,9 +815,9 @@
             html2pdf().from(elementoPDF).set(opt).save().then(() => {
                 elementoPDF.classList.add('hidden');
             });
-        }
+        };
 
-        window.onload = init;
+        iniciarSincronizacionNube();
     </script>
 </body>
 </html>
