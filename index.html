@@ -36,7 +36,7 @@
                 <button onclick="cambiarVista('publico')" id="btnPublico" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 rounded-lg text-sm font-medium transition shadow-sm border border-emerald-600">
                     <i class="fa-solid fa-globe mr-2"></i> Vista Pública
                 </button>
-                <button onclick="abrirModalAcceso()" id="btnAdminNav" class="px-4 py-2 bg-emerald-900 hover:bg-emerald-950 rounded-lg text-sm font-medium transition shadow-sm border border-emerald-700">
+                <button onclick="abrirModalAcceso()" id="btnAdminNav" class="px-4 py-2 bg-emerald-900 hover:bg-emerald-950 rounded-lg text-sm font-medium transition shadow-sm border border-emerald-700 cursor-pointer">
                     <i class="fa-solid fa-lock mr-2"></i> Administrador
                 </button>
             </div>
@@ -53,7 +53,7 @@
                     <h3 id="authModalTitle" class="text-lg font-bold text-slate-900">
                         <i class="fa-solid fa-shield-halved text-emerald-600 mr-2"></i> Acceso de Administrador
                     </h3>
-                    <button onclick="cerrarModalAcceso()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                    <button onclick="cerrarModalAcceso()" class="text-slate-400 hover:text-slate-600 cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
                 </div>
 
                 <!-- VISTA A: CREACIÓN DE CREDENCIALES (SOLO LA PRIMERA VEZ) -->
@@ -79,7 +79,7 @@
                     </div>
                     <div class="flex justify-end gap-2 pt-2">
                         <button type="button" onclick="cerrarModalAcceso()" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm">Cancelar</button>
-                        <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium">Guardar y Entrar</button>
+                        <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium cursor-pointer">Guardar y Entrar</button>
                     </div>
                 </form>
 
@@ -99,7 +99,7 @@
                     </div>
                     <div class="flex justify-end gap-2 pt-2 border-t">
                         <button type="button" onclick="cerrarModalAcceso()" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm">Cancelar</button>
-                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium">Iniciar Sesión</button>
+                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium cursor-pointer">Iniciar Sesión</button>
                     </div>
                 </form>
 
@@ -121,7 +121,7 @@
                     </div>
                     <div class="flex justify-between items-center pt-2">
                         <button type="button" onclick="abrirModalAcceso()" class="text-xs text-slate-500 hover:underline"><i class="fa-solid fa-arrow-left mr-1"></i> Volver</button>
-                        <button type="submit" id="btnRecuperarSubmit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium">Verificar Correo</button>
+                        <button type="submit" id="btnRecuperarSubmit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium cursor-pointer">Verificar Correo</button>
                     </div>
                 </form>
             </div>
@@ -181,7 +181,7 @@
                     <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-gauge text-emerald-600 mr-2"></i> Panel de Administración</h2>
                     <p class="text-sm text-slate-500">Bienvenido, <strong id="adminNombreDisplay" class="text-emerald-700">Administrador</strong>.</p>
                 </div>
-                <button onclick="cerrarAdmin()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition">
+                <button onclick="cerrarAdmin()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition cursor-pointer">
                     <i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar Sesión
                 </button>
             </div>
@@ -222,7 +222,7 @@
                             <input type="password" id="editAdminClave" minlength="6" placeholder="••••••••" class="w-full px-3 py-1.5 border rounded-lg text-xs">
                         </div>
                         <div class="flex justify-end">
-                            <button type="submit" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-medium transition">Actualizar</button>
+                            <button type="submit" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-medium transition cursor-pointer">Actualizar</button>
                         </div>
                     </form>
                 </div>
@@ -257,8 +257,8 @@
                     </div>
 
                     <div class="flex justify-end gap-3 pt-4 border-t">
-                        <button type="button" onclick="limpiarFormulario()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium">Limpiar</button>
-                        <button type="submit" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium shadow-sm">Guardar Jornada</button>
+                        <button type="button" onclick="limpiarFormulario()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium cursor-pointer">Limpiar</button>
+                        <button type="submit" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium shadow-sm cursor-pointer">Guardar Jornada</button>
                     </div>
                 </form>
             </div>
@@ -334,7 +334,7 @@
 
     <!-- SCRIPT -->
     <script>
-        const VERSION_APP = "2026.11.16-v3";
+        const VERSION_APP = "2026.11.16-v4";
 
         const jornadasExcelBase = [
             {
@@ -551,4 +551,225 @@
             }
 
             localStorage.setItem('ltsc_admin_auth', JSON.stringify(adminCredenciales));
-            document.getElementById('
+            document.getElementById('adminNombreDisplay').innerText = adminCredenciales.usuario;
+            document.getElementById('editAdminClave').value = '';
+            alert('¡Credenciales actualizadas correctamente!');
+        }
+
+        function cerrarAdmin() {
+            document.getElementById('vistaAdmin').classList.add('hidden');
+            document.getElementById('vistaPublica').classList.remove('hidden');
+        }
+
+        function cambiarVista(vista) {
+            if (vista === 'publico') {
+                document.getElementById('vistaPublica').classList.remove('hidden');
+                document.getElementById('vistaAdmin').classList.add('hidden');
+            }
+        }
+
+        function calcularTotalesGenerales() {
+            let totales = { vidrio: 0, plastico: 0, papel: 0, tetrapack: 0, aceite: 0, pilas: 0, aluminio: 0, anime: 0, electro: 0 };
+            let granTotal = 0;
+            let totalCO2 = 0;
+
+            jornadas.forEach(j => {
+                for (let mat in j.materiales) {
+                    const cant = Number(j.materiales[mat]) || 0;
+                    totales[mat] += cant;
+                    granTotal += cant;
+                    totalCO2 += cant * (materialesMeta[mat].factorCO2 || 1);
+                }
+            });
+            return { totales, granTotal, totalCO2 };
+        }
+
+        function renderVistaPublica() {
+            const { totales, granTotal, totalCO2 } = calcularTotalesGenerales();
+
+            document.getElementById('pubGranTotal').innerText = granTotal.toFixed(2) + ' kg';
+            document.getElementById('pubTotalKilos').innerText = granTotal.toFixed(2) + ' kg';
+            document.getElementById('pubHuellaCarbono').innerText = totalCO2.toFixed(2) + ' kg CO₂e';
+
+            const contenedorMat = document.getElementById('pubListaMateriales');
+            contenedorMat.innerHTML = '';
+
+            for (let mat in materialesMeta) {
+                const cantidad = totales[mat];
+                const porcentaje = granTotal > 0 ? ((cantidad / granTotal) * 100).toFixed(2) : 0;
+                const info = materialesMeta[mat];
+
+                contenedorMat.innerHTML += `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-sm font-medium text-slate-700">
+                            <span>${info.nombre}</span>
+                            <span>${cantidad.toFixed(2)} kg (${porcentaje}%)</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                            <div class="${info.color} h-3 rounded-full transition-all duration-500" style="width: ${porcentaje}%"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            const contenedorInformes = document.getElementById('pubListaInformes');
+            contenedorInformes.innerHTML = '';
+
+            if (jornadas.length === 0) {
+                contenedorInformes.innerHTML = `<p class="text-sm text-slate-500 col-span-3">No hay informes disponibles todavía.</p>`;
+                return;
+            }
+
+            jornadas.forEach((j, index) => {
+                let totalJornada = Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
+                contenedorInformes.innerHTML += `
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Jornada N° ${jornadas.length - index}</span>
+                            <h4 class="font-bold text-slate-800 mt-2">${j.lugar}</h4>
+                            <p class="text-xs text-slate-500 mt-1"><i class="fa-regular fa-calendar mr-1"></i> ${j.fecha} | Total: ${totalJornada.toFixed(2)} kg</p>
+                        </div>
+                        <button onclick="descargarInformePDF(${index})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+                            <i class="fa-solid fa-download"></i> Descargar Informe PDF
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        function renderTablaAdmin() {
+            const tbody = document.getElementById('tablaJornadasBody');
+            tbody.innerHTML = '';
+
+            if (jornadas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">No hay jornadas registradas.</td></tr>`;
+                return;
+            }
+
+            jornadas.forEach((j, index) => {
+                let totalJornada = Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-3 font-medium text-slate-800">${j.fecha}</td>
+                        <td class="px-4 py-3">${j.lugar}</td>
+                        <td class="px-4 py-3 font-semibold text-emerald-700">${totalJornada.toFixed(2)} kg</td>
+                        <td class="px-4 py-3 text-center space-x-2">
+                            <button onclick="editarJornada(${index})" class="px-3 py-1 bg-amber-100 text-amber-800 hover:bg-amber-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-pen"></i> Editar</button>
+                            <button onclick="eliminarJornada(${index})" class="px-3 py-1 bg-rose-100 text-rose-800 hover:bg-rose-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                            <button onclick="descargarInformePDF(${index})" class="px-3 py-1 bg-emerald-100 text-emerald-800 hover:bg-emerald-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function guardarJornada(event) {
+            event.preventDefault();
+            const index = document.getElementById('jornadaIndex').value;
+            const nuevaJornada = {
+                fecha: document.getElementById('inputFecha').value,
+                lugar: document.getElementById('inputLugar').value,
+                materiales: {
+                    vidrio: Number(document.getElementById('matVidrio').value),
+                    plastico: Number(document.getElementById('matPlastico').value),
+                    papel: Number(document.getElementById('matPapel').value),
+                    tetrapack: Number(document.getElementById('matTetrapack').value),
+                    aceite: Number(document.getElementById('matAceite').value),
+                    pilas: Number(document.getElementById('matPilas').value),
+                    aluminio: Number(document.getElementById('matAluminio').value),
+                    anime: Number(document.getElementById('matAnime').value),
+                    electro: Number(document.getElementById('matElectro').value)
+                }
+            };
+
+            if (index === '-1') {
+                jornadas.unshift(nuevaJornada);
+            } else {
+                jornadas[index] = nuevaJornada;
+            }
+
+            localStorage.setItem('jornadas_reciclaje', JSON.stringify(jornadas));
+            limpiarFormulario();
+            init();
+            alert('¡Jornada guardada con éxito!');
+        }
+
+        function editarJornada(index) {
+            const j = jornadas[index];
+            document.getElementById('jornadaIndex').value = index;
+            document.getElementById('inputFecha').value = j.fecha;
+            document.getElementById('inputLugar').value = j.lugar;
+            document.getElementById('matVidrio').value = j.materiales.vidrio;
+            document.getElementById('matPlastico').value = j.materiales.plastico;
+            document.getElementById('matPapel').value = j.materiales.papel;
+            document.getElementById('matTetrapack').value = j.materiales.tetrapack;
+            document.getElementById('matAceite').value = j.materiales.aceite;
+            document.getElementById('matPilas').value = j.materiales.pilas;
+            document.getElementById('matAluminio').value = j.materiales.aluminio;
+            document.getElementById('matAnime').value = j.materiales.anime;
+            document.getElementById('matElectro').value = j.materiales.electro;
+
+            document.getElementById('formTitulo').innerHTML = `<i class="fa-solid fa-pen-to-square text-emerald-600 mr-2"></i> Editando Jornada (${j.fecha})`;
+            window.scrollTo({ top: 400, behavior: 'smooth' });
+        }
+
+        function eliminarJornada(index) {
+            if (confirm('¿Está seguro de eliminar esta jornada?')) {
+                jornadas.splice(index, 1);
+                localStorage.setItem('jornadas_reciclaje', JSON.stringify(jornadas));
+                init();
+            }
+        }
+
+        function limpiarFormulario() {
+            document.getElementById('jornadaForm').reset();
+            document.getElementById('jornadaIndex').value = '-1';
+            document.getElementById('formTitulo').innerHTML = `<i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> Registrar Nueva Jornada`;
+        }
+
+        function descargarInformePDF(index) {
+            const j = jornadas[index];
+            let totalJornada = Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
+
+            document.getElementById('pdfNroReporte').innerText = `Reporte N° ${jornadas.length - index}`;
+            document.getElementById('pdfFechaEmision').innerText = `Fecha de emisión: ${j.fecha}`;
+            document.getElementById('pdfJornadaFecha').innerText = j.fecha;
+            document.getElementById('pdfJornadaLugar').innerText = j.lugar;
+            document.getElementById('pdfJornadaTotal').innerText = totalJornada.toFixed(2) + ' kg';
+
+            const contenedorPdfMat = document.getElementById('pdfMaterialesLista');
+            contenedorPdfMat.innerHTML = '';
+
+            for (let mat in j.materiales) {
+                const cant = j.materiales[mat];
+                if (cant > 0) {
+                    const porc = totalJornada > 0 ? ((cant / totalJornada) * 100).toFixed(2) : 0;
+                    contenedorPdfMat.innerHTML += `
+                        <div class="flex justify-between items-center text-xs py-1 border-b">
+                            <span class="font-medium">${materialesMeta[mat].nombre}</span>
+                            <span>${cant} kg (${porc}%)</span>
+                        </div>
+                    `;
+                }
+            }
+
+            const elementoPDF = document.getElementById('pdfTemplate');
+            elementoPDF.classList.remove('hidden');
+
+            const opt = {
+                margin:       10,
+                filename:     `Informe_Reciclaje_${j.fecha}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().from(elementoPDF).set(opt).save().then(() => {
+                elementoPDF.classList.add('hidden');
+            });
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
