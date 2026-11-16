@@ -246,7 +246,6 @@
                         </div>
                     </div>
 
-                    <!-- NUEVOS CAMPOS: ALIADOS Y OBSERVACIONES -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Aliados Institucionales / Alianzas:</label>
@@ -338,7 +337,6 @@
                 
                 <div id="pdfMaterialesLista" style="margin-bottom: 25px;"></div>
 
-                <!-- SECCIÓN DINÁMICA DE OBSERVACIONES (SI EXISTEN) -->
                 <div id="pdfObservacionesBox" style="margin-bottom: 20px; display: none; background-color: #fffbeb; border: 1px solid #fde68a; padding: 12px; border-radius: 6px;">
                     <h4 style="font-weight: bold; font-size: 11px; text-transform: uppercase; color: #92400e; margin: 0 0 4px 0;">Observaciones de la Jornada</h4>
                     <p id="pdfJornadaObservaciones" style="font-size: 11px; color: #78350f; margin: 0;"></p>
@@ -398,7 +396,6 @@
         let jornadas = [];
         let adminCredenciales = null;
         let logoCorporativoBase64 = null;
-        let correoVerificadoTemp = false;
 
         const jornadasExcelBase = [
             {
@@ -443,9 +440,10 @@
             electro: { nombre: 'Electrodomésticos', color: 'bg-indigo-600', factorCO2: 2.0 }
         };
 
-        function iniciarSincronizacionNube() {
+        async function iniciarSincronizacionNube() {
             const statusEl = document.getElementById('cloudStatus');
 
+            // Cargar configuración inicial (Logo y Credenciales)
             onSnapshot(doc(db, "configuracion", "general"), (docSnap) => {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
@@ -455,26 +453,34 @@
                 aplicarLogoCorporativo();
             });
 
+            // Sincronizar Jornadas
             const q = query(collection(db, "jornadas"), orderBy("fecha", "desc"));
             onSnapshot(q, async (snapshot) => {
-                statusEl.innerHTML = `<i class="fa-solid fa-cloud"></i> En Vivo`;
                 if (snapshot.empty) {
                     const checkSnap = await getDocs(collection(db, "jornadas"));
                     if (checkSnap.empty) {
                         for (const j of jornadasExcelBase) {
                             await addDoc(collection(db, "jornadas"), j);
                         }
+                        return; // Salir para esperar el siguiente ciclo de sincronización
                     }
-                } else {
-                    jornadas = [];
-                    snapshot.forEach((doc) => {
-                        jornadas.push({ id: doc.id, ...doc.data() });
-                    });
-                    renderVistaPublica();
-                    renderTablaAdmin();
                 }
+                
+                jornadas = [];
+                snapshot.forEach((doc) => {
+                    jornadas.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Cambiar estado a En Vivo exitosamente
+                statusEl.innerHTML = `<i class="fa-solid fa-cloud"></i> En Vivo`;
+                statusEl.className = "inline-flex items-center gap-1 bg-emerald-900/80 text-emerald-300 px-2 py-0.5 rounded-full text-[10px]";
+
+                renderVistaPublica();
+                renderTablaAdmin();
             }, (error) => {
-                console.error("Error:", error);
+                console.error("Error de Firebase:", error);
+                statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Error de Conexión`;
+                statusEl.className = "inline-flex items-center gap-1 bg-rose-900/80 text-rose-200 px-2 py-0.5 rounded-full text-[10px]";
             });
         }
 
@@ -523,7 +529,6 @@
 
             fLog.classList.remove('hidden');
             fRec.classList.add('hidden');
-            correoVerificadoTemp = false;
             modal.classList.remove('hidden');
         };
 
@@ -550,22 +555,21 @@
             document.getElementById('formRecuperar').classList.remove('hidden');
             document.getElementById('nuevaClaveBox').classList.add('hidden');
             document.getElementById('btnRecuperarSubmit').innerText = 'Verificar Correo';
-            correoVerificadoTemp = false;
         };
 
         window.procesarRecuperacion = async function(event) {
             event.preventDefault();
             const correoIngresado = document.getElementById('recCorreo').value.trim().toLowerCase();
+            const correoVerifBox = document.getElementById('nuevaClaveBox');
 
-            if (!correoVerificadoTemp) {
+            if (correoVerifBox.classList.contains('hidden')) {
                 if (adminCredenciales && correoIngresado === adminCredenciales.correo) {
-                    correoVerificadoTemp = true;
                     document.getElementById('usuarioRecuperado').innerText = adminCredenciales.usuario;
-                    document.getElementById('nuevaClaveBox').classList.remove('hidden');
+                    correoVerifBox.classList.remove('hidden');
                     document.getElementById('recNuevaClave').required = true;
                     document.getElementById('btnRecuperarSubmit').innerText = 'Guardar Nueva Clave';
                 } else {
-                    alert('El correo electrónico no coincide con el registrado en la base de datos.');
+                    alert('El correo electrónico no coincide con el registrado.');
                 }
             } else {
                 const nuevaClave = document.getElementById('recNuevaClave').value;
@@ -589,4 +593,154 @@
             event.preventDefault();
             const nuevoUsuario = document.getElementById('editAdminUsuario').value.trim();
             const nuevoCorreo = document.getElementById('editAdminCorreo').value.trim().toLowerCase();
-            const nuevaClave = document.getElementById('editAdminCl
+            const nuevaClave = document.getElementById('editAdminClave').value;
+
+            adminCredenciales.usuario = nuevoUsuario;
+            adminCredenciales.correo = nuevoCorreo;
+            if (nuevaClave.trim() !== '') adminCredenciales.clave = nuevaClave;
+
+            await setDoc(doc(db, "configuracion", "general"), { adminCredenciales }, { merge: true });
+            document.getElementById('adminNombreDisplay').innerText = adminCredenciales.usuario;
+            document.getElementById('editAdminClave').value = '';
+            alert('¡Credenciales de administrador actualizadas en la nube!');
+        };
+
+        window.cerrarAdmin = function() {
+            document.getElementById('vistaAdmin').classList.add('hidden');
+            document.getElementById('vistaPublica').classList.remove('hidden');
+        };
+
+        window.cambiarVista = function(vista) {
+            if (vista === 'publico') {
+                document.getElementById('vistaPublica').classList.remove('hidden');
+                document.getElementById('vistaAdmin').classList.add('hidden');
+            }
+        };
+
+        function calcularTotalesGenerales() {
+            let totales = { vidrio: 0, plastico: 0, papel: 0, tetrapack: 0, aceite: 0, pilas: 0, aluminio: 0, anime: 0, electro: 0 };
+            let granTotal = 0;
+            let totalCO2 = 0;
+
+            jornadas.forEach(j => {
+                for (let mat in j.materiales) {
+                    const cant = Number(j.materiales[mat]) || 0;
+                    totales[mat] += cant;
+                    granTotal += cant;
+                    totalCO2 += cant * (materialesMeta[mat].factorCO2 || 1);
+                }
+            });
+            return { totales, granTotal, totalCO2 };
+        }
+
+        window.toggleAcordeonBuscador = function() {
+            const contenido = document.getElementById('contenidoAcordeon');
+            const icono = document.getElementById('iconoAcordeon');
+            contenido.classList.toggle('hidden');
+            icono.classList.toggle('rotate-180');
+        }
+
+        window.limpiarFiltrosBusqueda = function() {
+            document.getElementById('filtroFecha').value = '';
+            document.getElementById('filtroTexto').value = '';
+            renderizarListaInformes(jornadas);
+        }
+
+        window.filtrarInformesPublicos = function() {
+            const fechaFiltro = document.getElementById('filtroFecha').value;
+            const textoFiltro = document.getElementById('filtroTexto').value.toLowerCase().trim();
+
+            const filtradas = jornadas.filter((j, index) => {
+                const nroInforme = `reporte n° ${jornadas.length - index}`;
+                const fechaMatch = fechaFiltro ? j.fecha === fechaFiltro : true;
+                const textoMatch = textoFiltro ? (
+                    j.lugar.toLowerCase().includes(textoFiltro) || 
+                    j.fecha.includes(textoFiltro) || 
+                    nroInforme.includes(textoFiltro)
+                ) : true;
+
+                return fechaMatch && textoMatch;
+            });
+
+            renderizarListaInformes(filtradas);
+        }
+
+        function renderVistaPublica() {
+            const { totales, granTotal, totalCO2 } = calcularTotalesGenerales();
+
+            document.getElementById('pubGranTotal').innerText = granTotal.toFixed(2) + ' kg';
+            document.getElementById('pubTotalKilos').innerText = granTotal.toFixed(2) + ' kg';
+            document.getElementById('pubHuellaCarbono').innerText = totalCO2.toFixed(2) + ' kg CO₂e';
+
+            const contenedorMat = document.getElementById('pubListaMateriales');
+            contenedorMat.innerHTML = '';
+
+            for (let mat in materialesMeta) {
+                const cantidad = totales[mat];
+                const porcentaje = granTotal > 0 ? ((cantidad / granTotal) * 100).toFixed(2) : 0;
+                const info = materialesMeta[mat];
+
+                contenedorMat.innerHTML += `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-sm font-medium text-slate-700">
+                            <span>${info.nombre}</span>
+                            <span>${cantidad.toFixed(2)} kg (${porcentaje}%)</span>
+                        </div>
+                        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                            <div class="${info.color} h-3 rounded-full transition-all duration-500" style="width: ${porcentaje}%"></div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderizarListaInformes(jornadas);
+        }
+
+        function renderizarListaInformes(lista) {
+            const contenedorInformes = document.getElementById('pubListaInformes');
+            contenedorInformes.innerHTML = '';
+
+            if (lista.length === 0) {
+                contenedorInformes.innerHTML = `<p class="text-sm text-slate-500 col-span-3 py-4">No se encontraron informes con los filtros seleccionados.</p>`;
+                return;
+            }
+
+            lista.forEach((j) => {
+                const realIndex = jornadas.findIndex(item => item.id === j.id);
+                let totalJornada = Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
+                
+                contenedorInformes.innerHTML += `
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Reporte N° ${jornadas.length - realIndex}</span>
+                            <h4 class="font-bold text-slate-800 mt-2">${j.lugar}</h4>
+                            <p class="text-xs text-slate-500 mt-1"><i class="fa-regular fa-calendar mr-1"></i> ${j.fecha} \vert{} Total:${totalJornada.toFixed(2)} kg</p>
+                        </div>
+                        <button onclick="previsualizarInformePDF(${realIndex})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+                            <i class="fa-solid fa-eye"></i> Ver / Descargar Informe PDF
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        function renderTablaAdmin() {
+            const tbody = document.getElementById('tablaJornadasBody');
+            tbody.innerHTML = '';
+
+            if (jornadas.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">No hay jornadas.</td></tr>`;
+                return;
+            }
+
+            jornadas.forEach((j, index) => {
+                let totalJornada = Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
+                tbody.innerHTML += `
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-3 font-medium text-slate-800">${j.fecha}</td>
+                        <td class="px-4 py-3">${j.lugar}</td>
+                        <td class="px-4 py-3 font-semibold text-emerald-700">${totalJornada.toFixed(2)} kg</td>
+                        <td class="px-4 py-3 text-center space-x-2">
+                            <button onclick="editarJornada(${index})" class="px-3 py-1 bg-amber-100 text-amber-800 hover:bg-amber-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-pen"></i> Editar</button>
+                            <button onclick="eliminarJornada('${j.id}')" class="px-3 py-1 bg-rose-100 text-rose-800 hover:bg-rose-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                            <button onclick="previsualizarInformePDF(${index})" class="px-3 py-1 bg-emerald-100 text-emerald-800 hover:bg-emerald-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-file-pdf"></i> PDF</button>
