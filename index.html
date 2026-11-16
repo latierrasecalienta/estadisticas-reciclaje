@@ -33,7 +33,11 @@
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="cambiarVista('publico')" id="btnPublico" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 rounded-lg text-sm font-medium transition shadow-sm border border-emerald-600">
+                <!-- Botón de recarga de caché para usuarios -->
+                <button onclick="forzarActualizacionCache()" title="Actualizar datos y limpiar caché" class="px-3 py-2 bg-emerald-700 hover:bg-emerald-600 rounded-lg text-sm transition shadow-sm border border-emerald-600 cursor-pointer flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate"></i> <span class="hidden sm:inline">Refrescar</span>
+                </button>
+                <button onclick="cambiarVista('publico')" id="btnPublico" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 rounded-lg text-sm font-medium transition shadow-sm border border-emerald-600 cursor-pointer">
                     <i class="fa-solid fa-globe mr-2"></i> Vista Pública
                 </button>
                 <button onclick="abrirModalAcceso()" id="btnAdminNav" class="px-4 py-2 bg-emerald-900 hover:bg-emerald-950 rounded-lg text-sm font-medium transition shadow-sm border border-emerald-700 cursor-pointer">
@@ -181,9 +185,14 @@
                     <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-gauge text-emerald-600 mr-2"></i> Panel de Administración</h2>
                     <p class="text-sm text-slate-500">Bienvenido, <strong id="adminNombreDisplay" class="text-emerald-700">Administrador</strong>.</p>
                 </div>
-                <button onclick="cerrarAdmin()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition cursor-pointer">
-                    <i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar Sesión
-                </button>
+                <div class="flex items-center gap-3">
+                    <button onclick="forzarActualizacionCache()" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium transition cursor-pointer flex items-center gap-1.5 shadow-sm">
+                        <i class="fa-solid fa-rotate"></i> Forzar Recarga Total
+                    </button>
+                    <button onclick="cerrarAdmin()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition cursor-pointer">
+                        <i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar Sesión
+                    </button>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -334,7 +343,7 @@
 
     <!-- SCRIPT -->
     <script>
-        const VERSION_APP = "2026.11.16-v4";
+        const VERSION_APP = "2026.11.16-v5";
 
         const jornadasExcelBase = [
             {
@@ -399,6 +408,13 @@
             aplicarLogoCorporativo();
             renderVistaPublica();
             renderTablaAdmin();
+        }
+
+        // Función para forzar limpieza y recarga inmediata
+        function forzarActualizacionCache() {
+            if (confirm('¿Deseas refrescar la aplicación y sincronizar los datos en tiempo real?')) {
+                window.location.reload(true);
+            }
         }
 
         function aplicarLogoCorporativo() {
@@ -691,7 +707,7 @@
             localStorage.setItem('jornadas_reciclaje', JSON.stringify(jornadas));
             limpiarFormulario();
             init();
-            alert('¡Jornada guardada con éxito!');
+            alert('¡Jornada guardada y sincronizada con éxito!');
         }
 
         function editarJornada(index) {
