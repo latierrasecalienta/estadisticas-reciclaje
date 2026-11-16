@@ -135,7 +135,7 @@
                 <div class="space-y-2 text-center md:text-left">
                     <span class="bg-emerald-600 text-emerald-100 text-xs px-3 py-1 rounded-full uppercase font-semibold tracking-wider">Reportes Oficiales en Vivo</span>
                     <h2 class="text-2xl md:text-3xl font-bold">Estadísticas de Jornadas de Reciclaje</h2>
-                    <p class="text-emerald-100 text-sm max-w-xl">Consulta los totales acumulados por material, el impacto ambiental y descarga los informes oficiales en PDF.</p>
+                    <p class="text-emerald-100 text-sm max-w-xl">Consulta los totales acumulados por material, el impacto ambiental y visualiza o descarga los informes oficiales.</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 text-center min-w-[200px]">
                     <span class="block text-xs text-emerald-200 uppercase font-medium">Gran Total Reciclado</span>
@@ -169,7 +169,6 @@
 
             <!-- CENTRO DE INFORMES CON BUSCADOR TIPO ACORDEÓN -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
-                <!-- CABECERA DEL ACORDEÓN DE BÚSQUEDA -->
                 <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
                     <button onclick="toggleAcordeonBuscador()" class="w-full px-5 py-4 flex justify-between items-center text-left font-bold text-slate-800 hover:bg-slate-100 transition cursor-pointer">
                         <span class="flex items-center gap-2 text-base">
@@ -177,7 +176,6 @@
                         </span>
                         <i id="iconoAcordeon" class="fa-solid fa-chevron-down text-slate-500 transition-transform duration-300"></i>
                     </button>
-                    <!-- CONTENIDO DESPLEGABLE DEL FILTRO -->
                     <div id="contenidoAcordeon" class="hidden p-5 border-t border-slate-200 bg-white grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-semibold text-slate-700 mb-1">Buscar por Fecha de Jornada:</label>
@@ -197,7 +195,7 @@
                     <h3 class="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
                         <i class="fa-solid fa-file-pdf text-rose-600"></i> Informes Disponibles Durante el Tiempo
                     </h3>
-                    <p class="text-sm text-slate-600 mb-6">Selecciona una jornada para descargar el informe oficial estructurado:</p>
+                    <p class="text-sm text-slate-600 mb-6">Selecciona una jornada para visualizar o descargar el informe oficial estructurado:</p>
                     <div id="pubListaInformes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
             </div>
@@ -311,14 +309,16 @@
         </div>
     </main>
 
-    <!-- CONTENEDOR VISIBLE PARA EL PDF -->
+    <!-- VENTANA MODAL PARA VISTA PREVIA Y DESCARGAR PDF -->
     <div id="pdfModalContainer" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-        <div class="bg-white p-6 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-4 border-b pb-2">
-                <h3 class="font-bold text-slate-800 text-sm"><i class="fa-solid fa-file-pdf text-rose-600 mr-1"></i> Generando documento PDF...</h3>
-                <span class="text-xs text-slate-500">Por favor espere un momento</span>
+        <div class="bg-white p-6 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 class="font-bold text-slate-800 text-base"><i class="fa-solid fa-file-pdf text-rose-600 mr-2"></i> Vista Previa del Informe Oficial</h3>
+                <button onclick="cerrarVistaPreviaPDF()" class="text-slate-400 hover:text-slate-600 cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <div id="pdfTemplate" style="background-color: #ffffff; color: #1e293b; padding: 30px; font-family: 'Inter', sans-serif; font-size: 14px;">
+
+            <!-- CONTENIDO DEL INFORME QUE SE VISUALIZA Y DESCARGA -->
+            <div id="pdfTemplate" style="background-color: #ffffff; color: #1e293b; padding: 20px; font-family: 'Inter', sans-serif; font-size: 14px; border: 1px solid #e2e8f0; border-radius: 8px;">
                 <table style="width: 100%; border-bottom: 2px solid #047857; padding-bottom: 15px; margin-bottom: 20px;">
                     <tr>
                         <td>
@@ -326,7 +326,7 @@
                                 <tr>
                                     <td id="pdfLogoCell" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid #d1d5db; text-align: center; vertical-align: middle; font-size: 20px; color: #047857;">🌱</td>
                                     <td style="padding-left: 12px;">
-                                        <h1 style="font-size: 20px; font-weight: bold; color: #065f46; margin: 0;">La Tierra se Calienta, A.C.</h1>
+                                        <h1 style="font-size: 18px; font-weight: bold; color: #065f46; margin: 0;">La Tierra se Calienta, A.C.</h1>
                                         <p style="font-size: 11px; color: #6b7280; margin: 2px 0 0 0;">Informe oficial de jornada | J-40706070-8</p>
                                     </td>
                                 </tr>
@@ -367,6 +367,14 @@
                 <div style="border-top: 1px solid #e5e7eb; padding-top: 10px; text-align: center; font-size: 9px; color: #9ca3af;">
                     <p style="margin: 0;">La Tierra se Calienta, A.C. www.latierrasecalienta.org | Depósito Legal: MI2024000503</p>
                 </div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN DEL MODAL -->
+            <div class="flex justify-end gap-3 pt-2">
+                <button type="button" onclick="cerrarVistaPreviaPDF()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium cursor-pointer">Cerrar</button>
+                <button type="button" id="btnEjecutarDescarga" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium shadow-sm flex items-center gap-2 cursor-pointer">
+                    <i class="fa-solid fa-download"></i> Descargar PDF Oficial
+                </button>
             </div>
         </div>
     </div>
@@ -650,7 +658,6 @@
             return { totales, granTotal, totalCO2 };
         }
 
-        // CONTROL DEL ACORDEÓN DE BÚSQUEDA
         window.toggleAcordeonBuscador = function() {
             const contenido = document.getElementById('contenidoAcordeon');
             const icono = document.getElementById('iconoAcordeon');
@@ -719,12 +726,11 @@
             contenedorInformes.innerHTML = '';
 
             if (lista.length === 0) {
-                contenedorInformes.innerHTML = `<p class="text-sm text-slate-500 col-span-3 text-py-4">No se encontraron informes con los filtros seleccionados.</p>`;
+                contenedorInformes.innerHTML = `<p class="text-sm text-slate-500 col-span-3 py-4">No se encontraron informes con los filtros seleccionados.</p>`;
                 return;
             }
 
             lista.forEach((j) => {
-                // Encontrar el índice real de la jornada en el arreglo principal para mantener su número de reporte original
                 const realIndex = jornadas.findIndex(item => item.id === j.id);
                 let totalJornada = Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
                 
@@ -735,8 +741,8 @@
                             <h4 class="font-bold text-slate-800 mt-2">${j.lugar}</h4>
                             <p class="text-xs text-slate-500 mt-1"><i class="fa-regular fa-calendar mr-1"></i> ${j.fecha} | Total: ${totalJornada.toFixed(2)} kg</p>
                         </div>
-                        <button onclick="descargarInformePDF(${realIndex})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 shadow-sm cursor-pointer">
-                            <i class="fa-solid fa-download"></i> Descargar Informe PDF
+                        <button onclick="previsualizarInformePDF(${realIndex})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+                            <i class="fa-solid fa-eye"></i> Ver / Descargar Informe PDF
                         </button>
                     </div>
                 `;
@@ -762,7 +768,7 @@
                         <td class="px-4 py-3 text-center space-x-2">
                             <button onclick="editarJornada(${index})" class="px-3 py-1 bg-amber-100 text-amber-800 hover:bg-amber-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-pen"></i> Editar</button>
                             <button onclick="eliminarJornada('${j.id}')" class="px-3 py-1 bg-rose-100 text-rose-800 hover:bg-rose-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-trash"></i> Eliminar</button>
-                            <button onclick="descargarInformePDF(${index})" class="px-3 py-1 bg-emerald-100 text-emerald-800 hover:bg-emerald-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                            <button onclick="previsualizarInformePDF(${index})" class="px-3 py-1 bg-emerald-100 text-emerald-800 hover:bg-emerald-200 rounded text-xs font-medium cursor-pointer"><i class="fa-solid fa-file-pdf"></i> PDF</button>
                         </td>
                     </tr>
                 `;
@@ -840,7 +846,10 @@
             document.getElementById('formTitulo').innerHTML = `<i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> Registrar Nueva Jornada`;
         };
 
-        window.descargarInformePDF = function(index) {
+        let indiceJornadaActualPDF = null;
+
+        window.previsualizarInformePDF = function(index) {
+            indiceJornadaActualPDF = index;
             const j = jornadas[index];
             let totalJornada = Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
 
@@ -866,8 +875,21 @@
                 }
             }
 
-            const modalCont = document.getElementById('pdfModalContainer');
-            modalCont.classList.remove('hidden');
+            // Mostrar la ventana modal con la vista previa
+            document.getElementById('pdfModalContainer').classList.remove('hidden');
+        };
+
+        window.cerrarVistaPreviaPDF = function() {
+            document.getElementById('pdfModalContainer').classList.add('hidden');
+        };
+
+        // Evento para disparar la descarga desde la ventana de vista previa con renderizado seguro
+        document.getElementById('btnEjecutarDescarga').addEventListener('click', function() {
+            if (indiceJornadaActualPDF === null) return;
+            const j = jornadas[indiceJornadaActualPDF];
+            const btn = document.getElementById('btnEjecutarDescarga');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generando PDF...`;
 
             const elementoPDF = document.getElementById('pdfTemplate');
 
@@ -881,14 +903,17 @@
 
             setTimeout(() => {
                 html2pdf().from(elementoPDF).set(opt).save().then(() => {
-                    modalCont.classList.add('hidden');
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fa-solid fa-download"></i> Descargar PDF Oficial`;
+                    document.getElementById('pdfModalContainer').classList.add('hidden');
                 }).catch(err => {
                     console.error(err);
-                    modalCont.classList.add('hidden');
+                    btn.disabled = false;
+                    btn.innerHTML = `<i class="fa-solid fa-download"></i> Descargar PDF Oficial`;
                     alert('Error al generar el PDF.');
                 });
-            }, 500);
-        };
+            }, 300);
+        });
 
         iniciarSincronizacionNube();
     </script>
