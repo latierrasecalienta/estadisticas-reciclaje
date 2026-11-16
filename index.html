@@ -106,7 +106,7 @@
         <!-- VISTA PÚBLICA -->
         <div id="vistaPublica" class="space-y-8">
             
-            <!-- SECCIÓN DE PRESENTACIÓN DEL PROGRAMA (DINÁMICA) -->
+            <!-- SECCIÓN DE PRESENTACIÓN DEL PROGRAMA -->
             <div id="seccionAcercaPublica" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center gap-6">
                 <div class="p-4 bg-emerald-50 text-emerald-700 rounded-2xl text-4xl flex-shrink-0">
                     <i class="fa-solid fa-earth-americas"></i>
@@ -154,7 +154,7 @@
                 <div id="pubListaMateriales" class="space-y-4"></div>
             </div>
 
-            <!-- CENTRO DE INFORMES CON BUSCADOR INTELIGENTE Y SELECTOR RÁPIDO -->
+            <!-- CENTRO DE INFORMES CON BUSCADOR Y SELECTOR RÁPIDO -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
                 <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
                     <button onclick="toggleAcordeonBuscador()" class="w-full px-5 py-4 flex justify-between items-center text-left font-bold text-slate-800 hover:bg-slate-100 transition cursor-pointer">
@@ -201,9 +201,14 @@
                     <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-gauge text-emerald-600 mr-2"></i> Panel de Administración (Sincronizado en la Nube)</h2>
                     <p class="text-sm text-slate-500">Bienvenido, <strong id="adminNombreDisplay" class="text-emerald-700">Administrador</strong>.</p>
                 </div>
-                <button onclick="cerrarAdmin()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition cursor-pointer">
-                    <i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar Sesión
-                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="cargarDatosBaseAdmin()" class="px-3 py-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs font-medium transition cursor-pointer" title="Cargar datos de prueba iniciales si deseas">
+                        <i class="fa-solid fa-database mr-1"></i> Cargar Datos Base
+                    </button>
+                    <button onclick="cerrarAdmin()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition cursor-pointer">
+                        <i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar Sesión
+                    </button>
+                </div>
             </div>
 
             <!-- GESTIÓN DE CONTENIDO Y ORDEN DE LA PÁGINA PRINCIPAL -->
@@ -351,7 +356,6 @@
                 <button onclick="cerrarVistaPreviaPDF()" class="text-slate-400 hover:text-slate-600 cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
 
-            <!-- CONTENIDO DEL INFORME QUE SE VISUALIZA Y DESCARGA -->
             <div id="pdfTemplate" style="background-color: #ffffff; color: #1e293b; padding: 20px; font-family: 'Inter', sans-serif; font-size: 14px; border: 1px solid #e2e8f0; border-radius: 8px;">
                 <table style="width: 100%; border-bottom: 2px solid #047857; padding-bottom: 15px; margin-bottom: 20px;">
                     <tr>
@@ -408,7 +412,6 @@
                 </div>
             </div>
 
-            <!-- BOTONES DE ACCIÓN DEL MODAL -->
             <div class="flex justify-end gap-3 pt-2">
                 <button type="button" onclick="cerrarVistaPreviaPDF()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium cursor-pointer">Cerrar</button>
                 <button type="button" id="btnEjecutarDescarga" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium shadow-sm flex items-center gap-2 cursor-pointer">
@@ -496,7 +499,6 @@
         async function iniciarSincronizacionNube() {
             const statusEl = document.getElementById('cloudStatus');
 
-            // Cargar configuración inicial (Logo, Credenciales y Sección Acerca)
             onSnapshot(doc(db, "configuracion", "general"), (docSnap) => {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
@@ -512,23 +514,9 @@
                 console.error("Error en config:", err);
             });
 
-            // Sincronizar Jornadas en tiempo real
+            // Sincronizar Jornadas en tiempo real (SIN recarga automática forzada al vaciar)
             const q = query(collection(db, "jornadas"), orderBy("fecha", "desc"));
-            onSnapshot(q, async (snapshot) => {
-                if (snapshot.empty) {
-                    try {
-                        const checkSnap = await getDocs(collection(db, "jornadas"));
-                        if (checkSnap.empty) {
-                            for (const j of jornadasExcelBase) {
-                                await addDoc(collection(db, "jornadas"), j);
-                            }
-                            return;
-                        }
-                    } catch (e) {
-                        console.error("Error inicializando datos base:", e);
-                    }
-                }
-
+            onSnapshot(q, (snapshot) => {
                 jornadas = [];
                 snapshot.forEach((doc) => {
                     jornadas.push({ id: doc.id, ...doc.data() });
@@ -545,6 +533,15 @@
                 statusEl.className = "inline-flex items-center gap-1 bg-rose-900/80 text-rose-200 px-2 py-0.5 rounded-full text-[10px]";
             });
         }
+
+        window.cargarDatosBaseAdmin = async function() {
+            if (confirm('¿Desea cargar los 4 informes de prueba iniciales en la base de datos?')) {
+                for (const j of jornadasExcelBase) {
+                    await addDoc(collection(db, "jornadas"), j);
+                }
+                alert('¡Datos de prueba cargados con éxito!');
+            }
+        };
 
         function aplicarLogoCorporativo() {
             const headerCont = document.getElementById('headerLogoContainer');
@@ -576,7 +573,6 @@
                 seccion.classList.add('hidden');
             }
 
-            // Sincronizar formulario del admin
             document.getElementById('editAcercaBadge').value = acercaConfig.badge;
             document.getElementById('editAcercaTitulo').value = acercaConfig.titulo;
             document.getElementById('editAcercaTexto').value = acercaConfig.texto;
@@ -817,7 +813,7 @@
             contenedorInformes.innerHTML = '';
 
             if (lista.length === 0) {
-                contenedorInformes.innerHTML = `<p class="text-sm text-slate-500 col-span-3 py-4">No se encontraron informes con los filtros seleccionados.</p>`;
+                contenedorInformes.innerHTML = `<p class="text-sm text-slate-500 col-span-3 py-4">No hay informes registrados todavía.</p>`;
                 return;
             }
 
@@ -845,7 +841,7 @@
             tbody.innerHTML = '';
 
             if (jornadas.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">No hay jornadas.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-4 text-center text-slate-400">No hay jornadas registradas. Puedes empezar agregando una arriba o usar el botón "Cargar Datos Base".</td></tr>`;
                 return;
             }
 
