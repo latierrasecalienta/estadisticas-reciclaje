@@ -875,7 +875,6 @@
                 }
             }
 
-            // Mostrar la ventana modal con la vista previa
             document.getElementById('pdfModalContainer').classList.remove('hidden');
         };
 
@@ -883,7 +882,7 @@
             document.getElementById('pdfModalContainer').classList.add('hidden');
         };
 
-        // Evento para disparar la descarga desde la ventana de vista previa con renderizado seguro
+        // Descarga optimizada clonando el elemento fuera de la ventana modal para evitar errores en blanco
         document.getElementById('btnEjecutarDescarga').addEventListener('click', function() {
             if (indiceJornadaActualPDF === null) return;
             const j = jornadas[indiceJornadaActualPDF];
@@ -891,7 +890,15 @@
             btn.disabled = true;
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generando PDF...`;
 
-            const elementoPDF = document.getElementById('pdfTemplate');
+            // Clonar el elemento de la plantilla fuera del modal para una captura limpia
+            const elementoOriginal = document.getElementById('pdfTemplate');
+            const clon = elementoOriginal.cloneNode(true);
+            clon.style.position = 'fixed';
+            clon.style.left = '-9999px';
+            clon.style.top = '0';
+            clon.style.width = '800px';
+            clon.style.zIndex = '99999';
+            document.body.appendChild(clon);
 
             const opt = {
                 margin:       10,
@@ -901,18 +908,18 @@
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            setTimeout(() => {
-                html2pdf().from(elementoPDF).set(opt).save().then(() => {
-                    btn.disabled = false;
-                    btn.innerHTML = `<i class="fa-solid fa-download"></i> Descargar PDF Oficial`;
-                    document.getElementById('pdfModalContainer').classList.add('hidden');
-                }).catch(err => {
-                    console.error(err);
-                    btn.disabled = false;
-                    btn.innerHTML = `<i class="fa-solid fa-download"></i> Descargar PDF Oficial`;
-                    alert('Error al generar el PDF.');
-                });
-            }, 300);
+            html2pdf().from(clon).set(opt).save().then(() => {
+                document.body.removeChild(clon);
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-download"></i> Descargar PDF Oficial`;
+                document.getElementById('pdfModalContainer').classList.add('hidden');
+            }).catch(err => {
+                console.error(err);
+                if (document.body.contains(clon)) document.body.removeChild(clon);
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-download"></i> Descargar PDF Oficial`;
+                alert('Error al generar el PDF.');
+            });
         });
 
         iniciarSincronizacionNube();
