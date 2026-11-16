@@ -21,7 +21,8 @@
     <header class="bg-emerald-800 text-white shadow-md">
         <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
-                <div class="bg-white p-2 rounded-full text-emerald-800 font-bold text-xl">
+                <!-- Contenedor dinámico del Logo Corporativo -->
+                <div id="headerLogoContainer" class="bg-white p-1.5 rounded-full text-emerald-800 font-bold text-xl flex items-center justify-center w-12 h-12 overflow-hidden shadow-sm">
                     <i class="fa-solid fa-seedling"></i>
                 </div>
                 <div>
@@ -33,7 +34,7 @@
                 <button onclick="cambiarVista('publico')" id="btnPublico" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-600 rounded-lg text-sm font-medium transition shadow-sm border border-emerald-600">
                     <i class="fa-solid fa-globe mr-2"></i> Vista Pública
                 </button>
-                <button onclick="toggleAdminLogin()" id="btnAdminNav" class="px-4 py-2 bg-emerald-900 hover:bg-emerald-950 rounded-lg text-sm font-medium transition shadow-sm border border-emerald-700">
+                <button onclick="abrirModalAcceso()" id="btnAdminNav" class="px-4 py-2 bg-emerald-900 hover:bg-emerald-950 rounded-lg text-sm font-medium transition shadow-sm border border-emerald-700">
                     <i class="fa-solid fa-lock mr-2"></i> Administrador
                 </button>
             </div>
@@ -43,19 +44,84 @@
     <!-- CONTENIDO PRINCIPAL -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 py-8">
 
-        <!-- MODAL DE LOGIN ADMIN -->
-        <div id="loginModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <!-- MODAL DE SEGURIDAD / LOGIN / CONFIGURACIÓN INICIAL -->
+        <div id="authModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-slate-900"><i class="fa-solid fa-shield-halved text-emerald-600 mr-2"></i> Acceso de Administrador</h3>
-                    <button onclick="toggleAdminLogin()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+                <div class="flex justify-between items-center mb-4 border-b pb-3">
+                    <h3 id="authModalTitle" class="text-lg font-bold text-slate-900">
+                        <i class="fa-solid fa-shield-halved text-emerald-600 mr-2"></i> Acceso de Administrador
+                    </h3>
+                    <button onclick="cerrarModalAcceso()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
                 </div>
-                <p class="text-sm text-slate-600 mb-4">Ingrese el PIN de seguridad para gestionar las jornadas y datos del Excel:</p>
-                <input type="password" id="adminPin" placeholder="PIN (ej. 2026)" class="w-full px-4 py-2 border rounded-lg mb-4 focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                <div class="flex justify-end gap-2">
-                    <button onclick="toggleAdminLogin()" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm">Cancelar</button>
-                    <button onclick="verificarAdmin()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium">Ingresar</button>
-                </div>
+
+                <!-- VISTA A: CREACIÓN DE CREDENCIALES (SOLO LA PRIMERA VEZ) -->
+                <form id="formRegistroInicial" onsubmit="crearCredencialesIniciales(event)" class="hidden space-y-4">
+                    <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl text-xs text-amber-800">
+                        <i class="fa-solid fa-circle-info mr-1"></i> <strong>Configuración de Seguridad Inicial:</strong> Crea tu usuario y clave secreta de administrador. Solo tú tendrás acceso a estos datos.
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nombre de Usuario Administrador:</label>
+                        <input type="text" id="regUsuario" required placeholder="ej. admin_ltsc" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Correo Electrónico de Recuperación:</label>
+                        <input type="email" id="regCorreo" required placeholder="ej. info@latierrasecalienta.org" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Contraseña Secreta:</label>
+                        <input type="password" id="regClave" required minlength="6" placeholder="Mínimo 6 caracteres" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Confirmar Contraseña Secreta:</label>
+                        <input type="password" id="regClaveConfirm" required minlength="6" placeholder="Repite tu contraseña" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-end gap-2 pt-2">
+                        <button type="button" onclick="cerrarModalAcceso()" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm">Cancelar</button>
+                        <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium">Guardar y Entrar</button>
+                    </div>
+                </form>
+
+                <!-- VISTA B: INICIO DE SESIÓN HABITUAL -->
+                <form id="formLogin" onsubmit="verificarLogin(event)" class="hidden space-y-4">
+                    <p class="text-xs text-slate-500">Ingresa tus credenciales privadas para gestionar las jornadas y estadísticas.</p>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Usuario Administrador:</label>
+                        <input type="text" id="loginUsuario" required placeholder="Tu nombre de usuario" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Contraseña Secreta:</label>
+                        <input type="password" id="loginClave" required placeholder="••••••••" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div class="flex justify-between items-center pt-1">
+                        <button type="button" onclick="mostrarRecuperacion()" class="text-xs text-emerald-700 hover:underline font-medium">¿Olvidaste tu clave o usuario?</button>
+                    </div>
+                    <div class="flex justify-end gap-2 pt-2 border-t">
+                        <button type="button" onclick="cerrarModalAcceso()" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg text-sm">Cancelar</button>
+                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium">Iniciar Sesión</button>
+                    </div>
+                </form>
+
+                <!-- VISTA C: RECUPERACIÓN POR CORREO ELECTRÓNICO -->
+                <form id="formRecuperar" onsubmit="procesarRecuperacion(event)" class="hidden space-y-4">
+                    <p class="text-xs text-slate-600">Ingresa el <strong>correo electrónico</strong> vinculado a la cuenta de administrador para verificar tu identidad y restablecer la clave:</p>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Correo Electrónico Registrado:</label>
+                        <input type="email" id="recCorreo" required placeholder="correo@ejemplo.com" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                    <div id="nuevaClaveBox" class="hidden space-y-3 pt-2 border-t">
+                        <div class="bg-emerald-50 text-emerald-800 p-2.5 rounded-lg text-xs">
+                            <i class="fa-solid fa-check-circle mr-1"></i> Correo verificado (<span id="usuarioRecuperado" class="font-bold"></span>). Define tu nueva contraseña:
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Nueva Contraseña Secreta:</label>
+                            <input type="password" id="recNuevaClave" minlength="6" placeholder="Mínimo 6 caracteres" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center pt-2">
+                        <button type="button" onclick="abrirModalAcceso()" class="text-xs text-slate-500 hover:underline"><i class="fa-solid fa-arrow-left mr-1"></i> Volver al login</button>
+                        <button type="submit" id="btnRecuperarSubmit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium">Verificar Correo</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -92,7 +158,7 @@
                 </div>
             </div>
 
-            <!-- Estadísticas individuales por producto (Estilo PDF barras) -->
+            <!-- Estadísticas individuales por producto -->
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
                 <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
                     <i class="fa-solid fa-chart-bar text-emerald-600"></i> Porcentaje de Materiales Recolectados (Acumulado General)
@@ -116,14 +182,62 @@
 
         <!-- VISTA DE ADMINISTRACIÓN (Oculta por defecto) -->
         <div id="vistaAdmin" class="hidden space-y-8">
-            <div class="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <div>
                     <h2 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-gauge text-emerald-600 mr-2"></i> Panel de Administración</h2>
-                    <p class="text-sm text-slate-500">Administra las jornadas, edita registros y genera informes institucionales.</p>
+                    <p class="text-sm text-slate-500">Bienvenido, <strong id="adminNombreDisplay" class="text-emerald-700">Administrador</strong>. Gestiona jornadas, identidad visual y seguridad.</p>
                 </div>
                 <button onclick="cerrarAdmin()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-sm font-medium transition">
-                    <i class="fa-solid fa-right-from-bracket mr-2"></i> Salir de Admin
+                    <i class="fa-solid fa-right-from-bracket mr-2"></i> Cerrar Sesión
                 </button>
+            </div>
+
+            <!-- SECCIÓN DE IDENTIDAD CORPORATIVA (LOGO) Y SEGURIDAD -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Tarjeta 1: Logo Corporativo -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                    <h3 class="text-base font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        <i class="fa-solid fa-image text-emerald-600"></i> Logo Corporativo de la Organización
+                    </h3>
+                    <p class="text-xs text-slate-500">Sube el archivo de imagen de tu logo (PNG o JPG) para mostrarlo en la cabecera de la web y en los informes PDF.</p>
+                    <div class="flex items-center gap-4">
+                        <div id="adminLogoPreview" class="w-16 h-16 rounded-full border-2 border-emerald-200 flex items-center justify-center bg-slate-50 overflow-hidden text-emerald-700 text-2xl">
+                            <i class="fa-solid fa-seedling"></i>
+                        </div>
+                        <div class="flex-1 space-y-2">
+                            <input type="file" id="inputLogoFile" accept="image/*" onchange="subirLogoArchivo(event)" class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100 cursor-pointer">
+                            <button type="button" onclick="restaurarLogoDefecto()" class="text-xs text-rose-600 hover:underline">Quitar logo personalizado</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta 2: Configuración de Seguridad y Credenciales -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                    <h3 class="text-base font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                        <i class="fa-solid fa-user-shield text-emerald-600"></i> Seguridad y Credenciales de Acceso
+                    </h3>
+                    <form onsubmit="actualizarCredenciales(event)" class="space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Usuario Administrador:</label>
+                                <input type="text" id="editAdminUsuario" required class="w-full px-3 py-1.5 border rounded-lg text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 mb-1">Correo de Recuperación:</label>
+                                <input type="email" id="editAdminCorreo" required class="w-full px-3 py-1.5 border rounded-lg text-xs">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Nueva Contraseña Secreta (dejar igual si no desea cambiarla):</label>
+                            <input type="password" id="editAdminClave" minlength="6" placeholder="••••••••" class="w-full px-3 py-1.5 border rounded-lg text-xs">
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-medium transition">
+                                Actualizar Credenciales
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <!-- Formulario para agregar / editar jornada -->
@@ -220,9 +334,14 @@
     <!-- PLANTILLA OCULTA PARA GENERAR EL PDF CON DISEÑO OFICIAL -->
     <div id="pdfTemplate" class="hidden bg-white p-8 max-w-[800px] mx-auto text-slate-800">
         <div class="border-b-2 border-emerald-700 pb-4 mb-6 flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl font-bold text-emerald-800">La Tierra se Calienta, A.C.</h1>
-                <p class="text-xs text-slate-500">Informe oficial de jornada de reciclaje | J-40706070-8</p>
+            <div class="flex items-center gap-3">
+                <div id="pdfLogoContainer" class="w-12 h-12 rounded-full border border-emerald-200 flex items-center justify-center overflow-hidden text-emerald-800 text-xl">
+                    <i class="fa-solid fa-seedling"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-emerald-800">La Tierra se Calienta, A.C.</h1>
+                    <p class="text-xs text-slate-500">Informe oficial de jornada de reciclaje | J-40706070-8</p>
+                </div>
             </div>
             <div class="text-right">
                 <span id="pdfNroReporte" class="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded font-semibold">Reporte Oficial</span>
@@ -260,10 +379,10 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE LÓGICA Y DATOS -->
+    <!-- SCRIPT DE LÓGICA, SEGURIDAD Y DATOS -->
     <script>
-        // Datos iniciales basados en el Excel y jornadas recientes
-        let jornadas = JSON.parse(localStorage.getItem('jornadas_reciclaje')) || [
+        // Datos precargados desde tu Excel oficial (2023 - 2025)
+        const jornadasExcelBase = [
             {
                 fecha: '2025-12-13',
                 lugar: 'Parque El Pilón, Urbanización La Tahona, Municipio Baruta',
@@ -273,8 +392,23 @@
                 fecha: '2025-11-08',
                 lugar: 'Parque El Pilón, Urbanización La Tahona, Municipio Baruta',
                 materiales: { vidrio: 70, plastico: 40, papel: 182.5, tetrapack: 3.75, aceite: 0, pilas: 0, aluminio: 1.25, anime: 1.5, electro: 0 }
+            },
+            {
+                fecha: '2025-10-11',
+                lugar: 'Parque El Pilón, Urbanización La Tahona, Municipio Baruta',
+                materiales: { vidrio: 245, plastico: 80, papel: 115, tetrapack: 1, aceite: 8.9, pilas: 8, aluminio: 1.5, anime: 2, electro: 0 }
+            },
+            {
+                fecha: '2025-07-12',
+                lugar: 'Parque El Pilón, Urbanización La Tahona, Municipio Baruta',
+                materiales: { vidrio: 175, plastico: 43, papel: 142, tetrapack: 15.7, aceite: 93, pilas: 0, aluminio: 3.75, anime: 3, electro: 0 }
             }
         ];
+
+        let jornadas = JSON.parse(localStorage.getItem('jornadas_reciclaje')) || jornadasExcelBase;
+        let adminCredenciales = JSON.parse(localStorage.getItem('ltsc_admin_auth')) || null;
+        let logoCorporativoBase64 = localStorage.getItem('ltsc_logo_corp') || null;
+        let correoVerificadoTemp = false;
 
         const materialesMeta = {
             vidrio: { nombre: 'Vidrio', color: 'bg-green-600', factorCO2: 0.5 },
@@ -289,8 +423,173 @@
         };
 
         function init() {
+            aplicarLogoCorporativo();
             renderVistaPublica();
             renderTablaAdmin();
+        }
+
+        // --- GESTIÓN DEL LOGO CORPORATIVO ---
+        function aplicarLogoCorporativo() {
+            const headerCont = document.getElementById('headerLogoContainer');
+            const previewCont = document.getElementById('adminLogoPreview');
+            const pdfCont = document.getElementById('pdfLogoContainer');
+
+            if (logoCorporativoBase64) {
+                const imgTag = `<img src="${logoCorporativoBase64}" alt="Logo La Tierra se Calienta" class="w-full h-full object-contain">`;
+                headerCont.innerHTML = imgTag;
+                if (previewCont) previewCont.innerHTML = imgTag;
+                if (pdfCont) pdfCont.innerHTML = imgTag;
+            } else {
+                const iconTag = `<i class="fa-solid fa-seedling"></i>`;
+                headerCont.innerHTML = iconTag;
+                if (previewCont) previewCont.innerHTML = iconTag;
+                if (pdfCont) pdfCont.innerHTML = iconTag;
+            }
+        }
+
+        function subirLogoArchivo(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                logoCorporativoBase64 = e.target.result;
+                localStorage.setItem('ltsc_logo_corp', logoCorporativoBase64);
+                aplicarLogoCorporativo();
+                alert('¡Logo corporativo actualizado con éxito!');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function restaurarLogoDefecto() {
+            localStorage.removeItem('ltsc_logo_corp');
+            logoCorporativoBase64 = null;
+            aplicarLogoCorporativo();
+        }
+
+        // --- SISTEMA DE SEGURIDAD Y AUTENTICACIÓN ---
+        function abrirModalAcceso() {
+            const modal = document.getElementById('authModal');
+            const fReg = document.getElementById('formRegistroInicial');
+            const fLog = document.getElementById('formLogin');
+            const fRec = document.getElementById('formRecuperar');
+            const title = document.getElementById('authModalTitle');
+
+            fReg.classList.add('hidden');
+            fLog.classList.add('hidden');
+            fRec.classList.add('hidden');
+            correoVerificadoTemp = false;
+
+            if (!adminCredenciales) {
+                title.innerHTML = `<i class="fa-solid fa-key text-emerald-600 mr-2"></i> Configurar Acceso Administrador`;
+                fReg.classList.remove('hidden');
+            } else {
+                title.innerHTML = `<i class="fa-solid fa-shield-halved text-emerald-600 mr-2"></i> Acceso de Administrador`;
+                fLog.classList.remove('hidden');
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function cerrarModalAcceso() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        function crearCredencialesIniciales(event) {
+            event.preventDefault();
+            const usuario = document.getElementById('regUsuario').value.trim();
+            const correo = document.getElementById('regCorreo').value.trim().toLowerCase();
+            const clave = document.getElementById('regClave').value;
+            const confirm = document.getElementById('regClaveConfirm').value;
+
+            if (clave !== confirm) {
+                alert('Las contraseñas no coinciden. Inténtalo de nuevo.');
+                return;
+            }
+
+            adminCredenciales = { usuario, correo, clave };
+            localStorage.setItem('ltsc_admin_auth', JSON.stringify(adminCredenciales));
+            cerrarModalAcceso();
+            entrarAlPanelAdmin();
+            alert('¡Credenciales secretas creadas! Guarda bien tu usuario y clave.');
+        }
+
+        function verificarLogin(event) {
+            event.preventDefault();
+            const user = document.getElementById('loginUsuario').value.trim();
+            const pass = document.getElementById('loginClave').value;
+
+            if (adminCredenciales && user === adminCredenciales.usuario && pass === adminCredenciales.clave) {
+                document.getElementById('formLogin').reset();
+                cerrarModalAcceso();
+                entrarAlPanelAdmin();
+            } else {
+                alert('Usuario o contraseña secreta incorrectos.');
+            }
+        }
+
+        function mostrarRecuperacion() {
+            document.getElementById('formLogin').classList.add('hidden');
+            document.getElementById('formRecuperar').classList.remove('hidden');
+            document.getElementById('nuevaClaveBox').classList.add('hidden');
+            document.getElementById('btnRecuperarSubmit').innerText = 'Verificar Correo';
+            document.getElementById('authModalTitle').innerHTML = `<i class="fa-solid fa-envelope-open-text text-emerald-600 mr-2"></i> Recuperar Acceso`;
+            correoVerificadoTemp = false;
+        }
+
+        function procesarRecuperacion(event) {
+            event.preventDefault();
+            const correoIngresado = document.getElementById('recCorreo').value.trim().toLowerCase();
+
+            if (!correoVerificadoTemp) {
+                if (adminCredenciales && correoIngresado === adminCredenciales.correo) {
+                    correoVerificadoTemp = true;
+                    document.getElementById('usuarioRecuperado').innerText = adminCredenciales.usuario;
+                    document.getElementById('nuevaClaveBox').classList.remove('hidden');
+                    document.getElementById('recNuevaClave').required = true;
+                    document.getElementById('btnRecuperarSubmit').innerText = 'Guardar Nueva Clave';
+                } else {
+                    alert('El correo electrónico no coincide con el registrado por el administrador.');
+                }
+            } else {
+                const nuevaClave = document.getElementById('recNuevaClave').value;
+                adminCredenciales.clave = nuevaClave;
+                localStorage.setItem('ltsc_admin_auth', JSON.stringify(adminCredenciales));
+                alert('¡Contraseña restablecida con éxito! Ahora puedes iniciar sesión.');
+                abrirModalAcceso();
+            }
+        }
+
+        function entrarAlPanelAdmin() {
+            document.getElementById('vistaPublica').classList.add('hidden');
+            document.getElementById('vistaAdmin').classList.remove('hidden');
+            document.getElementById('adminNombreDisplay').innerText = adminCredenciales.usuario;
+            document.getElementById('editAdminUsuario').value = adminCredenciales.usuario;
+            document.getElementById('editAdminCorreo').value = adminCredenciales.correo;
+            renderTablaAdmin();
+        }
+
+        function actualizarCredenciales(event) {
+            event.preventDefault();
+            const nuevoUsuario = document.getElementById('editAdminUsuario').value.trim();
+            const nuevoCorreo = document.getElementById('editAdminCorreo').value.trim().toLowerCase();
+            const nuevaClave = document.getElementById('editAdminClave').value;
+
+            adminCredenciales.usuario = nuevoUsuario;
+            adminCredenciales.correo = nuevoCorreo;
+            if (nuevaClave.trim() !== '') {
+                adminCredenciales.clave = nuevaClave;
+            }
+
+            localStorage.setItem('ltsc_admin_auth', JSON.stringify(adminCredenciales));
+            document.getElementById('adminNombreDisplay').innerText = adminCredenciales.usuario;
+            document.getElementById('editAdminClave').value = '';
+            alert('¡Datos de seguridad y correo actualizados correctamente!');
+        }
+
+        function cerrarAdmin() {
+            document.getElementById('vistaAdmin').classList.add('hidden');
+            document.getElementById('vistaPublica').classList.remove('hidden');
         }
 
         function cambiarVista(vista) {
@@ -300,29 +599,7 @@
             }
         }
 
-        function toggleAdminLogin() {
-            const modal = document.getElementById('loginModal');
-            modal.classList.toggle('hidden');
-        }
-
-        function verificarAdmin() {
-            const pin = document.getElementById('adminPin').value;
-            if (pin === '2026') {
-                document.getElementById('loginModal').classList.add('hidden');
-                document.getElementById('adminPin').value = '';
-                document.getElementById('vistaPublica').classList.add('hidden');
-                document.getElementById('vistaAdmin').classList.remove('hidden');
-                renderTablaAdmin();
-            } else {
-                alert('PIN incorrecto. Intente con "2026".');
-            }
-        }
-
-        function cerrarAdmin() {
-            document.getElementById('vistaAdmin').classList.add('hidden');
-            document.getElementById('vistaPublica').classList.remove('hidden');
-        }
-
+        // --- CÁLCULOS Y RENDERIZADO ---
         function calcularTotalesGenerales() {
             let totales = { vidrio: 0, plastico: 0, papel: 0, tetrapack: 0, aceite: 0, pilas: 0, aluminio: 0, anime: 0, electro: 0 };
             let granTotal = 0;
@@ -347,7 +624,6 @@
             document.getElementById('pubTotalKilos').innerText = granTotal.toFixed(2) + ' kg';
             document.getElementById('pubHuellaCarbono').innerText = totalCO2.toFixed(2) + ' kg CO₂e';
 
-            // Renderizar barras de porcentaje
             const contenedorMat = document.getElementById('pubListaMateriales');
             contenedorMat.innerHTML = '';
 
@@ -369,7 +645,6 @@
                 `;
             }
 
-            // Renderizar listado de informes PDF públicos
             const contenedorInformes = document.getElementById('pubListaInformes');
             contenedorInformes.innerHTML = '';
 
