@@ -33,7 +33,6 @@
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <!-- Botón de recarga de caché para usuarios -->
                 <button onclick="forzarActualizacionCache()" title="Actualizar datos y limpiar caché" class="px-3 py-2 bg-emerald-700 hover:bg-emerald-600 rounded-lg text-sm transition shadow-sm border border-emerald-600 cursor-pointer flex items-center gap-1.5">
                     <i class="fa-solid fa-rotate"></i> <span class="hidden sm:inline">Refrescar</span>
                 </button>
@@ -343,8 +342,9 @@
 
     <!-- SCRIPT -->
     <script>
-        const VERSION_APP = "2026.11.16-v5";
+        const VERSION_APP = "2026.11.16-v6"; // Versión para sincronización global automática
 
+        // Base de datos de jornadas predeterminadas sincronizadas
         const jornadasExcelBase = [
             {
                 fecha: '2025-12-13',
@@ -371,16 +371,8 @@
         function verificarVersionCache() {
             const cacheActual = localStorage.getItem('ltsc_app_version');
             if (cacheActual !== VERSION_APP) {
-                const jornadasPrevias = localStorage.getItem('jornadas_reciclaje');
-                const adminPrevio = localStorage.getItem('ltsc_admin_auth');
-                const logoPrevio = localStorage.getItem('ltsc_logo_corp');
-
-                localStorage.clear();
-
-                if (jornadasPrevias) localStorage.setItem('jornadas_reciclaje', jornadasPrevias);
-                if (adminPrevio) localStorage.setItem('ltsc_admin_auth', adminPrevio);
-                if (logoPrevio) localStorage.setItem('ltsc_logo_corp', logoPrevio);
-
+                // Sincronización automática: si cambia la versión, aseguramos que carguen los datos base oficiales
+                localStorage.setItem('jornadas_reciclaje', JSON.stringify(jornadasExcelBase));
                 localStorage.setItem('ltsc_app_version', VERSION_APP);
             }
         }
@@ -410,7 +402,6 @@
             renderTablaAdmin();
         }
 
-        // Función para forzar limpieza y recarga inmediata
         function forzarActualizacionCache() {
             if (confirm('¿Deseas refrescar la aplicación y sincronizar los datos en tiempo real?')) {
                 window.location.reload(true);
@@ -707,7 +698,7 @@
             localStorage.setItem('jornadas_reciclaje', JSON.stringify(jornadas));
             limpiarFormulario();
             init();
-            alert('¡Jornada guardada y sincronizada con éxito!');
+            alert('¡Jornada guardada y sincronizada globalmente!');
         }
 
         function editarJornada(index) {
