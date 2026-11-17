@@ -233,7 +233,12 @@
                         <i class="fa-solid fa-file-pdf text-rose-600"></i> Informes Disponibles Durante el Tiempo
                     </h3>
                     <p class="text-sm text-slate-600 mb-6">Selecciona una jornada para visualizar o descargar el informe oficial estructurado:</p>
+                    
+                    <!-- Cuadrícula de 3 columnas para los informes paginados -->
                     <div id="pubListaInformes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+                    <!-- Paginación Interactiva -->
+                    <div id="paginacionContenedor" class="flex flex-wrap items-center justify-center gap-2 mt-8 pt-4 border-t border-slate-200"></div>
                 </div>
             </div>
         </div>
@@ -586,6 +591,8 @@
         let jornadas = [];
         let adminCredenciales = null;
         let logoCorporativoBase64 = null;
+        let paginaActual = 1;
+        const informesPorPagina = 6; // 6 informes por página (dos filas de 3 columnas)
         
         let acercaConfig = {
             badge: "Acerca del Programa",
@@ -645,7 +652,7 @@
                 console.error("Error en config:", err);
             });
 
-            // ORDENADO CRONOLÓGICO ASCENDENTE (Más antiguo primero: Reporte N° 1 es el primero de 2023, y los más nuevos son los últimos)
+            // Orden ascendente cronológico (más antiguo Reporte N° 1, más reciente el último número)
             const q = query(collection(db, "jornadas"), orderBy("fecha", "asc"));
             onSnapshot(q, (snapshot) => {
                 jornadas = [];
@@ -947,17 +954,19 @@
             document.getElementById('filtroFecha').value = '';
             document.getElementById('filtroTexto').value = '';
             document.getElementById('selectInformeRapido').value = '';
-            renderizarListaInformes(jornadas);
+            paginaActual = 1;
+            renderizarListaInformesPaginada(jornadas);
         }
 
         window.seleccionarInformeDirecto = function(indexStr) {
             if (indexStr === "") {
-                renderizarListaInformes(jornadas);
+                paginaActual = 1;
+                renderizarListaInformesPaginada(jornadas);
                 return;
             }
             const idx = Number(indexStr);
             const jornadaSeleccionada = jornadas[idx];
-            if (jornadaSeleccionada) renderizarListaInformes([jornadaSeleccionada]);
+            if (jornadaSeleccionada) renderizarListaInformesPaginada([jornadaSeleccionada], true);
         }
 
         window.filtrarInformesPublicos = function() {
@@ -978,7 +987,8 @@
                 return fechaMatch && textoMatch;
             });
 
-            renderizarListaInformes(filtradas);
+            paginaActual = 1;
+            renderizarListaInformesPaginada(filtradas);
         }
 
         function actualizarSelectorInformesRapidos() {
@@ -1105,19 +1115,54 @@
 
             actualizarGraficoLineasAnual();
             actualizarSelectorInformesRapidos();
-            renderizarListaInformes(jornadas);
+            renderizarListaInformesPaginada(jornadas);
         }
 
-        function renderizarListaInformes(lista) {
+        window.cambiarPagina = function(num) {
+            paginaActual = num;
+            renderizarListaInformesPaginada(jornadas);
+            document.getElementById('bloqueInformesBuscador').scrollIntoView({ behavior: 'smooth' });
+        };
+
+        function renderizarListaInformesPaginada(lista, esIndividual = false) {
             const contenedorInformes = document.getElementById('pubListaInformes');
+            const contenedorPaginacion = document.getElementById('paginacionContenedor');
             contenedorInformes.innerHTML = '';
+            contenedorPaginacion.innerHTML = '';
 
             if (lista.length === 0) {
-                contenedorInformes.innerHTML = `<p class="text-sm text-slate-500 col-span-3 py-4">No hay informes registrados todavía.</p>`;
+                contenedorInformes.innerHTML = `<p class="text-sm text-slate-500 col-span-3 py-4 text-center">No hay informes registrados todavía.</p>`;
                 return;
             }
 
-            lista.forEach((j) => {
+            if (esIndividual) {
+                const j = lista[0];
+                const realIndex = jornadas.findIndex(item => item.id === j.id);
+                let totalJornada = Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
+                contenedorInformes.innerHTML = `
+                    <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Reporte N° ${realIndex + 1}</span>
+                            <h4 class="font-bold text-slate-800 mt-2">${j.lugar}</h4>
+                            <p class="text-xs text-slate-500 mt-1"><i class="fa-regular fa-calendar mr-1"></i> ${j.fecha} | Total: ${totalJornada.toFixed(2)} kg</p>
+                        </div>
+                        <button onclick="previsualizarInformePDF(${realIndex})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 shadow-sm cursor-pointer">
+                            <i class="fa-solid fa-eye"></i> Ver / Descargar Informe PDF
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calcular Paginación (6 por página)
+            const totalPaginas = Math.ceil(lista.length / informesPorPagina);
+            if (paginaActual > totalPaginas) paginaActual = totalPaginas || 1;
+
+            const inicio = (paginaActual - 1) * informesPorPagina;
+            const fin = inicio + informesPorPagina;
+            const informesPagina = lista.slice(inicio, fin);
+
+            informesPagina.forEach((j) => {
                 const realIndex = jornadas.findIndex(item => item.id === j.id);
                 let totalJornada = Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
                 
@@ -1134,6 +1179,21 @@
                     </div>
                 `;
             });
+
+            // Dibujar botones de paginación si hay más de 1 página
+            if (totalPaginas > 1) {
+                for (let i = 1; i <= totalPaginas; i++) {
+                    const activoClass = i === paginaActual 
+                        ? 'bg-emerald-700 text-white font-bold shadow-sm' 
+                        : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200';
+                    
+                    contenedorPaginacion.innerHTML += `
+                        <button onclick="cambiarPagina(${i})" class="px-3.5 py-1.5 rounded-lg text-xs transition cursor-pointer ${activoClass}">
+                            Página ${i}
+                        </button>
+                    `;
+                }
+            }
         }
 
         function renderTablaAdmin() {
