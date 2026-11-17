@@ -234,7 +234,7 @@
                     </h3>
                     <p class="text-sm text-slate-600 mb-6">Selecciona una jornada para visualizar o descargar el informe oficial estructurado:</p>
                     
-                    <!-- Cuadrícula de 3 columnas para los informes paginados -->
+                    <!-- Cuadrícula de 3 columnas para informes paginados -->
                     <div id="pubListaInformes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
 
                     <!-- Paginación Interactiva -->
@@ -592,7 +592,7 @@
         let adminCredenciales = null;
         let logoCorporativoBase64 = null;
         let paginaActual = 1;
-        const informesPorPagina = 6; // 6 informes por página (dos filas de 3 columnas)
+        const informesPorPagina = 6; // 6 informes por página (cuadrícula de 3x2)
         
         let acercaConfig = {
             badge: "Acerca del Programa",
@@ -652,8 +652,8 @@
                 console.error("Error en config:", err);
             });
 
-            // Orden ascendente cronológico (más antiguo Reporte N° 1, más reciente el último número)
-            const q = query(collection(db, "jornadas"), orderBy("fecha", "asc"));
+            // Orden descendente (más nuevo primero)
+            const q = query(collection(db, "jornadas"), orderBy("fecha", "desc"));
             onSnapshot(q, (snapshot) => {
                 jornadas = [];
                 snapshot.forEach((doc) => {
@@ -975,7 +975,7 @@
             document.getElementById('selectInformeRapido').value = '';
 
             const filtradas = jornadas.filter((j, index) => {
-                const nroInforme = `reporte n° ${index + 1}`;
+                const nroInforme = `reporte n° ${jornadas.length - index}`;
                 const fechaMatch = fechaFiltro ? j.fecha === fechaFiltro : true;
                 const textoMatch = textoFiltro ? (
                     j.lugar.toLowerCase().includes(textoFiltro) || 
@@ -996,7 +996,7 @@
             select.innerHTML = `<option value="">-- Todos los informes (${jornadas.length}) --</option>`;
 
             jornadas.forEach((j, index) => {
-                const nro = index + 1;
+                const nro = jornadas.length - index;
                 select.innerHTML += `<option value="${index}">Reporte N° ${nro} - ${j.fecha} (${j.lugar.substring(0, 30)}...)</option>`;
             });
         }
@@ -1142,7 +1142,7 @@
                 contenedorInformes.innerHTML = `
                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col justify-between gap-4">
                         <div>
-                            <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Reporte N° ${realIndex + 1}</span>
+                            <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Reporte N° ${jornadas.length - realIndex}</span>
                             <h4 class="font-bold text-slate-800 mt-2">${j.lugar}</h4>
                             <p class="text-xs text-slate-500 mt-1"><i class="fa-regular fa-calendar mr-1"></i> ${j.fecha} | Total: ${totalJornada.toFixed(2)} kg</p>
                         </div>
@@ -1154,7 +1154,7 @@
                 return;
             }
 
-            // Calcular Paginación (6 por página)
+            // Calcular Paginación (6 por página) con orden descendente (más nuevo primero)
             const totalPaginas = Math.ceil(lista.length / informesPorPagina);
             if (paginaActual > totalPaginas) paginaActual = totalPaginas || 1;
 
@@ -1169,7 +1169,7 @@
                 contenedorInformes.innerHTML += `
                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col justify-between gap-4">
                         <div>
-                            <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Reporte N° ${realIndex + 1}</span>
+                            <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Reporte N° ${jornadas.length - realIndex}</span>
                             <h4 class="font-bold text-slate-800 mt-2">${j.lugar}</h4>
                             <p class="text-xs text-slate-500 mt-1"><i class="fa-regular fa-calendar mr-1"></i> ${j.fecha} | Total: ${totalJornada.toFixed(2)} kg</p>
                         </div>
@@ -1180,7 +1180,7 @@
                 `;
             });
 
-            // Dibujar botones de paginación si hay más de 1 página
+            // Dibujar botones de paginación
             if (totalPaginas > 1) {
                 for (let i = 1; i <= totalPaginas; i++) {
                     const activoClass = i === paginaActual 
@@ -1326,7 +1326,7 @@
             const j = jornadas[index];
             let totalJornada = Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
 
-            document.getElementById('pdfNroReporte').innerText = `Reporte N° ${index + 1}`;
+            document.getElementById('pdfNroReporte').innerText = `Reporte N° ${jornadas.length - index}`;
             document.getElementById('pdfFechaEmision').innerText = `Fecha de emisión: ${j.fecha}`;
             document.getElementById('pdfJornadaFecha').innerText = j.fecha;
             document.getElementById('pdfJornadaLugar').innerText = j.lugar;
