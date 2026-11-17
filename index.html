@@ -645,8 +645,8 @@
                 console.error("Error en config:", err);
             });
 
-            // ORDENADO DE FORMA DESCENDENTE (Lo más reciente primero: Reporte N° 1 es el más nuevo, o numeración ascendente lógica)
-            const q = query(collection(db, "jornadas"), orderBy("fecha", "desc"));
+            // ORDENADO CRONOLÓGICO ASCENDENTE (Más antiguo primero: Reporte N° 1 es el primero de 2023, y los más nuevos son los últimos)
+            const q = query(collection(db, "jornadas"), orderBy("fecha", "asc"));
             onSnapshot(q, (snapshot) => {
                 jornadas = [];
                 snapshot.forEach((doc) => {
@@ -669,8 +669,8 @@
         window.cargarDatosBaseAdmin = async function() {
             if (confirm('¿Desea cargar los informes de prueba iniciales en la base de datos?')) {
                 const basePrueba = [
-                    { fecha: '2024-10-11', lugar: 'Parque El Pilón, Urbanización La Tahona, Municipio Baruta', aliados: 'Multirecicla, Brocicla', observaciones: 'Jornada exitosa', materiales: { vidrio: 100, plastico: 50, papel: 100, tetrapack: 10, aceite: 0, pilas: 0, aluminio: 5, anime: 2, electro: 0 } },
-                    { fecha: '2025-02-15', lugar: 'Parque El Pilón, Urbanización La Tahona, Municipio Baruta', aliados: 'Multirecicla, Philips', observaciones: 'Gran participación', materiales: { vidrio: 150, plastico: 70, papel: 120, tetrapack: 15, aceite: 5, pilas: 2, aluminio: 8, anime: 3, electro: 0 } }
+                    { fecha: '2023-10-23', lugar: 'Parque El Pilón', aliados: 'Multirecicla', observaciones: 'Primer informe', materiales: { vidrio: 100, plastico: 50, papel: 100, tetrapack: 10, aceite: 0, pilas: 0, aluminio: 5, anime: 2, electro: 0 } },
+                    { fecha: '2025-02-15', lugar: 'Parque El Pilón', aliados: 'Multirecicla, Philips', observaciones: 'Último informe', materiales: { vidrio: 150, plastico: 70, papel: 120, tetrapack: 15, aceite: 5, pilas: 2, aluminio: 8, anime: 3, electro: 0 } }
                 ];
                 for (const j of basePrueba) {
                     await addDoc(collection(db, "jornadas"), j);
