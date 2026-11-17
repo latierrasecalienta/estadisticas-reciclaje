@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chart.js para gráficos de líneas profesionales -->
+    <!-- Chart.js para gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Librería para generar PDFs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -105,11 +105,11 @@
             </div>
         </div>
 
-        <!-- VISTA PÚBLICA -->
+        <!-- VISTA PÚBLICA (CONTENEDORES DINÁMICOS ORDENABLES) -->
         <div id="vistaPublica" class="space-y-8">
             
-            <!-- SECCIÓN DE PRESENTACIÓN DEL PROGRAMA -->
-            <div id="seccionAcercaPublica" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center gap-6">
+            <!-- BLOQUE 1: ACERCA DEL PROGRAMA -->
+            <div id="bloqueAcerca" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center gap-6">
                 <div class="p-4 bg-emerald-50 text-emerald-700 rounded-2xl text-4xl flex-shrink-0">
                     <i class="fa-solid fa-earth-americas"></i>
                 </div>
@@ -118,7 +118,6 @@
                     <h2 id="pubAcercaTitulo" class="text-xl md:text-2xl font-bold text-slate-800">Reciclaje con Propósito</h2>
                     <p id="pubAcercaTexto" class="text-sm text-slate-600 leading-relaxed">Transformamos la gestión ambiental en una fuente de trabajo sostenible y educación comunitaria, midiendo el impacto real en la reducción de la huella de carbono en cada jornada.</p>
                 </div>
-                <!-- ENLACE RÁPIDO A LA WEB OFICIAL -->
                 <div class="flex-shrink-0">
                     <a href="https://www.latierrasecalienta.org" target="_blank" class="px-5 py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-semibold shadow-sm transition flex items-center gap-2">
                         <i class="fa-solid fa-globe text-sm"></i> Visitar Web Oficial
@@ -126,54 +125,51 @@
                 </div>
             </div>
 
-            <div class="bg-gradient-to-r from-emerald-700 to-teal-800 rounded-2xl p-6 md:p-8 text-white shadow-lg flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="space-y-2 text-center md:text-left">
-                    <span class="bg-emerald-600 text-emerald-100 text-xs px-3 py-1 rounded-full uppercase font-semibold tracking-wider">Reportes Oficiales en Vivo</span>
-                    <h2 class="text-2xl md:text-3xl font-bold">Estadísticas de Jornadas de Reciclaje</h2>
-                    <p class="text-emerald-100 text-sm max-w-xl">Consulta los totales acumulados por material, el impacto ambiental y visualiza o descarga los informes oficiales.</p>
+            <!-- BLOQUE 2: TARJETAS DE RESUMEN (BANNER Y MÉTRICAS) -->
+            <div id="bloqueTarjetasResumen" class="space-y-6">
+                <div class="bg-gradient-to-r from-emerald-700 to-teal-800 rounded-2xl p-6 md:p-8 text-white shadow-lg flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div class="space-y-2 text-center md:text-left">
+                        <span id="pubBannerBadge" class="bg-emerald-600 text-emerald-100 text-xs px-3 py-1 rounded-full uppercase font-semibold tracking-wider">Reportes Oficiales en Vivo</span>
+                        <h2 id="pubBannerTitulo" class="text-2xl md:text-3xl font-bold">Estadísticas de Jornadas de Reciclaje</h2>
+                        <p id="pubBannerSub" class="text-emerald-100 text-sm max-w-xl">Consulta los totales acumulados por material, el impacto ambiental y visualiza o descarga los informes oficiales.</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 text-center min-w-[200px]">
+                        <span id="pubLabelGranTotal" class="block text-xs text-emerald-200 uppercase font-medium">Gran Total Reciclado</span>
+                        <span id="pubGranTotal" class="text-3xl font-extrabold text-white">0.00 kg</span>
+                    </div>
                 </div>
-                <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 text-center min-w-[200px]">
-                    <span class="block text-xs text-emerald-200 uppercase font-medium">Gran Total Reciclado</span>
-                    <span id="pubGranTotal" class="text-3xl font-extrabold text-white">0.00 kg</span>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
+                        <div class="p-4 bg-emerald-50 text-emerald-600 rounded-2xl text-2xl"><i class="fa-solid fa-weight-scale"></i></div>
+                        <div>
+                            <p id="pubLabelKilos" class="text-xs text-slate-500 uppercase font-semibold">Total Materiales Recolectados</p>
+                            <h3 id="pubTotalKilos" class="text-2xl font-bold text-slate-800">0.00 kg</h3>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
+                        <div class="p-4 bg-teal-50 text-teal-600 rounded-2xl text-2xl"><i class="fa-solid fa-cloud-arrow-down"></i></div>
+                        <div>
+                            <p id="pubLabelCarbono" class="text-xs text-slate-500 uppercase font-semibold">Impacto: Reducción Huella de Carbono</p>
+                            <h3 id="pubHuellaCarbono" class="text-2xl font-bold text-slate-800">0.00 kg CO₂e</h3>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
-                    <div class="p-4 bg-emerald-50 text-emerald-600 rounded-2xl text-2xl"><i class="fa-solid fa-weight-scale"></i></div>
-                    <div>
-                        <p class="text-xs text-slate-500 uppercase font-semibold">Total Materiales Recolectados</p>
-                        <h3 id="pubTotalKilos" class="text-2xl font-bold text-slate-800">0.00 kg</h3>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center space-x-4">
-                    <div class="p-4 bg-teal-50 text-teal-600 rounded-2xl text-2xl"><i class="fa-solid fa-cloud-arrow-down"></i></div>
-                    <div>
-                        <p class="text-xs text-slate-500 uppercase font-semibold">Impacto: Reducción Huella de Carbono</p>
-                        <h3 id="pubHuellaCarbono" class="text-2xl font-bold text-slate-800">0.00 kg CO₂e</h3>
-                    </div>
-                </div>
-            </div>
-
-            <!-- GRÁFICO DE LÍNEAS: COMPARACIÓN ANUAL Y POR MATERIAL -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
+            <!-- BLOQUE 3: GRÁFICO DE LÍNEAS AGRUPADO POR AÑOS -->
+            <div id="bloqueGrafico" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
                     <div>
                         <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-chart-line text-emerald-600"></i> Comparación Anual y Resultados por Jornada
+                            <i class="fa-solid fa-chart-line text-emerald-600"></i> Comparativa Anual de Resultados de Reciclaje
                         </h3>
-                        <p class="text-xs text-slate-500">Analiza la evolución de las recolecciones a lo largo del tiempo.</p>
+                        <p class="text-xs text-slate-500">Evolución del reciclaje agrupada por año y filtrada por material.</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
                         <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Filtrar por Año:</label>
-                            <select id="filtroAnioGrafico" onchange="actualizarGraficoLineas()" class="px-3 py-1.5 border rounded-lg text-xs bg-white font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                                <option value="todos">Todos los Años</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Filtrar Material:</label>
-                            <select id="filtroMaterialGrafico" onchange="actualizarGraficoLineas()" class="px-3 py-1.5 border rounded-lg text-xs bg-white font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Filtrar por Material:</label>
+                            <select id="filtroMaterialGrafico" onchange="actualizarGraficoLineasAnual()" class="px-3 py-1.5 border rounded-lg text-xs bg-white font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                                 <option value="todos">Total General (Todas las Categorías)</option>
                                 <option value="vidrio">Vidrio</option>
                                 <option value="plastico">Plástico</option>
@@ -194,15 +190,16 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
+            <!-- BLOQUE 4: PORCENTAJE DE MATERIALES -->
+            <div id="bloqueMaterialesPorcentaje" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8">
                 <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
                     <i class="fa-solid fa-chart-bar text-emerald-600"></i> Porcentaje de Materiales Recolectados (Acumulado General)
                 </h3>
                 <div id="pubListaMateriales" class="space-y-4"></div>
             </div>
 
-            <!-- CENTRO DE INFORMES CON BUSCADOR Y SELECTOR RÁPIDO -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
+            <!-- BLOQUE 5: CENTRO DE INFORMES Y BUSCADOR -->
+            <div id="bloqueInformesBuscador" class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
                 <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50">
                     <button onclick="toggleAcordeonBuscador()" class="w-full px-5 py-4 flex justify-between items-center text-left font-bold text-slate-800 hover:bg-slate-100 transition cursor-pointer">
                         <span class="flex items-center gap-2 text-base">
@@ -258,32 +255,90 @@
                 </div>
             </div>
 
-            <!-- GESTIÓN DE CONTENIDO Y ORDEN DE LA PÁGINA PRINCIPAL -->
+            <!-- GESTIÓN DE ORDEN Y DISEÑO DE LA PÁGINA PÚBLICA -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
                 <h3 class="text-base font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
-                    <i class="fa-solid fa-pen-to-square text-emerald-600"></i> Gestión de la Sección "Acerca del Programa"
+                    <i class="fa-solid fa-list-ol text-emerald-600"></i> Orden de los Bloques en la Vista Pública
                 </h3>
-                <form onsubmit="actualizarAcercaConfig(event)" class="space-y-4">
+                <p class="text-xs text-slate-500">Asigna un número de orden (1 al 5) a cada sección para definir cómo se mostrarán a los visitantes:</p>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 pt-2">
+                    <div class="bg-slate-50 p-3 rounded-xl border">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Acerca del Programa:</label>
+                        <input type="number" id="ordenAcerca" min="1" max="5" class="w-full px-3 py-1.5 border rounded-lg text-sm bg-white">
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Tarjetas y Banner:</label>
+                        <input type="number" id="ordenTarjetas" min="1" max="5" class="w-full px-3 py-1.5 border rounded-lg text-sm bg-white">
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Gráfico de Líneas:</label>
+                        <input type="number" id="ordenGrafico" min="1" max="5" class="w-full px-3 py-1.5 border rounded-lg text-sm bg-white">
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Porcentaje Materiales:</label>
+                        <input type="number" id="ordenMateriales" min="1" max="5" class="w-full px-3 py-1.5 border rounded-lg text-sm bg-white">
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border">
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Buscador e Informes:</label>
+                        <input type="number" id="ordenInformes" min="1" max="5" class="w-full px-3 py-1.5 border rounded-lg text-sm bg-white">
+                    </div>
+                </div>
+            </div>
+
+            <!-- GESTIÓN DE TEXTOS Y TÍTULOS DE LOS RECUADROS -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                <h3 class="text-base font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
+                    <i class="fa-solid fa-pen-to-square text-emerald-600"></i> Edición de Textos y Títulos de la Vista Pública
+                </h3>
+                <form onsubmit="guardarTextosPublicos(event)" class="space-y-4">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">Etiqueta Superior (Badge):</label>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Etiqueta "Acerca" (Badge):</label>
                             <input type="text" id="editAcercaBadge" required class="w-full px-3 py-2 border rounded-lg text-sm">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-slate-600 mb-1">Título de la Sección:</label>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Título "Acerca del Programa":</label>
                             <input type="text" id="editAcercaTitulo" required class="w-full px-3 py-2 border rounded-lg text-sm">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-slate-600 mb-1">Descripción del Programa / Proyecto:</label>
-                        <textarea id="editAcercaTexto" rows="3" required class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
+                        <label class="block text-xs font-medium text-slate-600 mb-1">Descripción "Acerca del Programa":</label>
+                        <textarea id="editAcercaTexto" rows="2" required class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
                     </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Título del Banner Principal:</label>
+                            <input type="text" id="editBannerTitulo" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Subtítulo del Banner:</label>
+                            <input type="text" id="editBannerSub" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Texto Gran Total (Etiqueta):</label>
+                            <input type="text" id="editLabelGranTotal" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Etiqueta Tarjeta Kilos:</label>
+                            <input type="text" id="editLabelKilos" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 mb-1">Etiqueta Tarjeta Carbono:</label>
+                            <input type="text" id="editLabelCarbono" required class="w-full px-3 py-2 border rounded-lg text-sm">
+                        </div>
+                    </div>
+
                     <div class="flex items-center justify-between pt-2 border-t">
                         <label class="flex items-center gap-2 cursor-pointer">
                             <input type="checkbox" id="editAcercaVisible" class="w-4 h-4 text-emerald-600 rounded">
-                            <span class="text-xs font-semibold text-slate-700">Mostrar esta sección en la página principal</span>
+                            <span class="text-xs font-semibold text-slate-700">Mostrar sección "Acerca del Programa" en la web</span>
                         </label>
-                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium transition cursor-pointer">Guardar Cambios de Presentación</button>
+                        <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-medium transition cursor-pointer">Guardar Cambios de Diseño y Textos</button>
                     </div>
                 </form>
             </div>
@@ -531,23 +586,30 @@
         let jornadas = [];
         let adminCredenciales = null;
         let logoCorporativoBase64 = null;
+        
         let acercaConfig = {
             badge: "Acerca del Programa",
             titulo: "Reciclaje con Propósito",
             texto: "Transformamos la gestión ambiental en una fuente de trabajo sostenible y educación comunitaria, midiendo el impacto real en la reducción de la huella de carbono en cada jornada.",
-            visible: true
+            visible: true,
+            bannerTitulo: "Estadísticas de Jornadas de Reciclaje",
+            bannerSub: "Consulta los totales acumulados por material, el impacto ambiental y visualiza o descarga los informes oficiales.",
+            bannerBadge: "Reportes Oficiales en Vivo",
+            labelGranTotal: "Gran Total Reciclado",
+            labelKilos: "Total Materiales Recolectados",
+            labelCarbono: "Impacto: Reducción Huella de Carbono"
         };
 
-        let listaAliadosGlobal = [
-            "Multirecicla",
-            "Brocicla",
-            "Philips",
-            "Voluntariado Comunitario"
-        ];
+        let ordenBloquesConfig = {
+            acerca: 1,
+            tarjetas: 2,
+            grafico: 3,
+            materiales: 4,
+            informes: 5
+        };
 
-        let listaLugaresGlobal = [
-            "Parque El Pilón, Urbanización La Tahona, Municipio Baruta"
-        ];
+        let listaAliadosGlobal = ["Multirecicla", "Brocicla", "Philips", "Voluntariado Comunitario"];
+        let listaLugaresGlobal = ["Parque El Pilón, Urbanización La Tahona, Municipio Baruta"];
 
         const jornadasExcelBase = [
             {
@@ -602,12 +664,13 @@
                     const data = docSnap.data();
                     adminCredenciales = data.adminCredenciales || null;
                     logoCorporativoBase64 = data.logoCorporativoBase64 || null;
-                    if (data.acercaConfig) acercaConfig = data.acercaConfig;
+                    if (data.acercaConfig) acercaConfig = { ...acercaConfig, ...data.acercaConfig };
+                    if (data.ordenBloquesConfig) ordenBloquesConfig = { ...ordenBloquesConfig, ...data.ordenBloquesConfig };
                     if (data.listaAliadosGlobal) listaAliadosGlobal = data.listaAliadosGlobal;
                     if (data.listaLugaresGlobal) listaLugaresGlobal = data.listaLugaresGlobal;
                 }
                 aplicarLogoCorporativo();
-                aplicarAcercaConfig();
+                aplicarConfiguracionVisual();
                 renderizarOpcionesFormulario();
             }, (err) => {
                 console.error("Error en config:", err);
@@ -642,6 +705,79 @@
             }
         };
 
+        function aplicarConfiguracionVisual() {
+            // Textos
+            document.getElementById('pubAcercaBadge').innerText = acercaConfig.badge;
+            document.getElementById('pubAcercaTitulo').innerText = acercaConfig.titulo;
+            document.getElementById('pubAcercaTexto').innerText = acercaConfig.texto;
+            document.getElementById('pubBannerBadge').innerText = acercaConfig.bannerBadge || "Reportes Oficiales en Vivo";
+            document.getElementById('pubBannerTitulo').innerText = acercaConfig.bannerTitulo;
+            document.getElementById('pubBannerSub').innerText = acercaConfig.bannerSub;
+            document.getElementById('pubLabelGranTotal').innerText = acercaConfig.labelGranTotal;
+            document.getElementById('pubLabelKilos').innerText = acercaConfig.labelKilos;
+            document.getElementById('pubLabelCarbono').innerText = acercaConfig.labelCarbono;
+
+            const bloqueAcerca = document.getElementById('bloqueAcerca');
+            if (acercaConfig.visible) {
+                bloqueAcerca.classList.remove('hidden');
+            } else {
+                bloqueAcerca.classList.add('hidden');
+            }
+
+            // Sincronizar formulario del admin
+            document.getElementById('editAcercaBadge').value = acercaConfig.badge;
+            document.getElementById('editAcercaTitulo').value = acercaConfig.titulo;
+            document.getElementById('editAcercaTexto').value = acercaConfig.texto;
+            document.getElementById('editBannerTitulo').value = acercaConfig.bannerTitulo;
+            document.getElementById('editBannerSub').value = acercaConfig.bannerSub;
+            document.getElementById('editLabelGranTotal').value = acercaConfig.labelGranTotal;
+            document.getElementById('editLabelKilos').value = acercaConfig.labelKilos;
+            document.getElementById('editLabelCarbono').value = acercaConfig.labelCarbono;
+            document.getElementById('editAcercaVisible').checked = acercaConfig.visible;
+
+            // Orden de bloques (Flexbox order)
+            document.getElementById('bloqueAcerca').style.order = ordenBloquesConfig.acerca;
+            document.getElementById('bloqueTarjetasResumen').style.order = ordenBloquesConfig.tarjetas;
+            document.getElementById('bloqueGrafico').style.order = ordenBloquesConfig.grafico;
+            document.getElementById('bloqueMaterialesPorcentaje').style.order = ordenBloquesConfig.materiales;
+            document.getElementById('bloqueInformesBuscador').style.order = ordenBloquesConfig.informes;
+
+            // Hacer que vistaPublica actúe como contenedor ordenable
+            document.getElementById('vistaPublica').style.display = 'flex';
+            document.getElementById('vistaPublica').style.flexDirection = 'column';
+
+            // Sincronizar inputs de orden en el admin
+            document.getElementById('ordenAcerca').value = ordenBloquesConfig.acerca;
+            document.getElementById('ordenTarjetas').value = ordenBloquesConfig.tarjetas;
+            document.getElementById('ordenGrafico').value = ordenBloquesConfig.grafico;
+            document.getElementById('ordenMateriales').value = ordenBloquesConfig.materiales;
+            document.getElementById('ordenInformes').value = ordenBloquesConfig.informes;
+        }
+
+        window.guardarTextosPublicos = async function(event) {
+            event.preventDefault();
+            acercaConfig.badge = document.getElementById('editAcercaBadge').value.trim();
+            acercaConfig.titulo = document.getElementById('editAcercaTitulo').value.trim();
+            acercaConfig.texto = document.getElementById('editAcercaTexto').value.trim();
+            acercaConfig.bannerTitulo = document.getElementById('editBannerTitulo').value.trim();
+            acercaConfig.bannerSub = document.getElementById('editBannerSub').value.trim();
+            acercaConfig.labelGranTotal = document.getElementById('editLabelGranTotal').value.trim();
+            acercaConfig.labelKilos = document.getElementById('editLabelKilos').value.trim();
+            acercaConfig.labelCarbono = document.getElementById('editLabelCarbono').value.trim();
+            acercaConfig.visible = document.getElementById('editAcercaVisible').checked;
+
+            ordenBloquesConfig = {
+                acerca: Number(document.getElementById('ordenAcerca').value) || 1,
+                tarjetas: Number(document.getElementById('ordenTarjetas').value) || 2,
+                grafico: Number(document.getElementById('ordenGrafico').value) || 3,
+                materiales: Number(document.getElementById('ordenMateriales').value) || 4,
+                informes: Number(document.getElementById('ordenInformes').value) || 5
+            };
+
+            await setDoc(doc(db, "configuracion", "general"), { acercaConfig, ordenBloquesConfig }, { merge: true });
+            alert('¡Diseño, orden y textos actualizados con éxito en la nube!');
+        };
+
         function renderizarOpcionesFormulario() {
             const selLugar = document.getElementById('selectLugarPredeterminado');
             if (selLugar) {
@@ -666,9 +802,7 @@
         }
 
         window.seleccionarLugar = function(valor) {
-            if (valor) {
-                document.getElementById('inputLugar').value = valor;
-            }
+            if (valor) document.getElementById('inputLugar').value = valor;
         };
 
         window.agregarNuevoAliadoLista = async function() {
@@ -681,9 +815,9 @@
                 await setDoc(doc(db, "configuracion", "general"), { listaAliadosGlobal }, { merge: true });
                 input.value = '';
                 renderizarOpcionesFormulario();
-                alert(`¡Aliado "${nuevo}" agregado a la lista predeterminada!`);
+                alert(`¡Aliado "${nuevo}" agregado!`);
             } else {
-                alert('Este aliado ya se encuentra en la lista.');
+                alert('Este aliado ya está en la lista.');
             }
         };
 
@@ -704,37 +838,6 @@
                 if (pdfCell) pdfCell.innerHTML = '🌱';
             }
         }
-
-        function aplicarAcercaConfig() {
-            const seccion = document.getElementById('seccionAcercaPublica');
-            document.getElementById('pubAcercaBadge').innerText = acercaConfig.badge;
-            document.getElementById('pubAcercaTitulo').innerText = acercaConfig.titulo;
-            document.getElementById('pubAcercaTexto').innerText = acercaConfig.texto;
-
-            if (acercaConfig.visible) {
-                seccion.classList.remove('hidden');
-            } else {
-                seccion.classList.add('hidden');
-            }
-
-            document.getElementById('editAcercaBadge').value = acercaConfig.badge;
-            document.getElementById('editAcercaTitulo').value = acercaConfig.titulo;
-            document.getElementById('editAcercaTexto').value = acercaConfig.texto;
-            document.getElementById('editAcercaVisible').checked = acercaConfig.visible;
-        }
-
-        window.actualizarAcercaConfig = async function(event) {
-            event.preventDefault();
-            acercaConfig = {
-                badge: document.getElementById('editAcercaBadge').value.trim(),
-                titulo: document.getElementById('editAcercaTitulo').value.trim(),
-                texto: document.getElementById('editAcercaTexto').value.trim(),
-                visible: document.getElementById('editAcercaVisible').checked
-            };
-
-            await setDoc(doc(db, "configuracion", "general"), { acercaConfig }, { merge: true });
-            alert('¡Sección "Acerca del Programa" actualizada con éxito!');
-        };
 
         window.subirLogoArchivo = function(event) {
             const file = event.target.files[0];
@@ -800,13 +903,13 @@
                     document.getElementById('recNuevaClave').required = true;
                     document.getElementById('btnRecuperarSubmit').innerText = 'Guardar Nueva Clave';
                 } else {
-                    alert('El correo electrónico no coincide con el registrado.');
+                    alert('El correo electrónico no coincide.');
                 }
             } else {
                 const nuevaClave = document.getElementById('recNuevaClave').value;
                 adminCredenciales.clave = nuevaClave;
                 await setDoc(doc(db, "configuracion", "general"), { adminCredenciales }, { merge: true });
-                alert('¡Contraseña restablecida con éxito!');
+                alert('¡Contraseña restablecida!');
                 abrirModalAcceso();
             }
         };
@@ -833,7 +936,7 @@
             await setDoc(doc(db, "configuracion", "general"), { adminCredenciales }, { merge: true });
             document.getElementById('adminNombreDisplay').innerText = adminCredenciales.usuario;
             document.getElementById('editAdminClave').value = '';
-            alert('¡Credenciales de administrador actualizadas en la nube!');
+            alert('¡Credenciales actualizadas!');
         };
 
         window.cerrarAdmin = function() {
@@ -885,9 +988,7 @@
             }
             const idx = Number(indexStr);
             const jornadaSeleccionada = jornadas[idx];
-            if (jornadaSeleccionada) {
-                renderizarListaInformes([jornadaSeleccionada]);
-            }
+            if (jornadaSeleccionada) renderizarListaInformes([jornadaSeleccionada]);
         }
 
         window.filtrarInformesPublicos = function() {
@@ -921,70 +1022,70 @@
             });
         }
 
-        function poblarFiltroAniosGrafico() {
-            const selectAnio = document.getElementById('filtroAnioGrafico');
-            const aniosDisponibles = new Set();
-            jornadas.forEach(j => {
-                if (j.fecha && j.fecha.length >= 4) {
-                    aniosDisponibles.add(j.fecha.substring(0, 4));
-                }
-            });
-
-            const valorActual = selectAnio.value;
-            selectAnio.innerHTML = `<option value="todos">Todos los Años</option>`;
-            Array.from(aniosDisponibles).sort().forEach(anio => {
-                selectAnio.innerHTML += `<option value="${anio}">${anio}</option>`;
-            });
-            selectAnio.value = aniosDisponibles.has(valorActual) ? valorActual : "todos";
-        }
-
-        window.actualizarGraficoLineas = function() {
-            const anioFiltro = document.getElementById('filtroAnioGrafico').value;
+        // GRÁFICO DE LÍNEAS AGRUPADO POR AÑOS Y MATERIALES
+        window.actualizarGraficoLineasAnual = function() {
             const materialFiltro = document.getElementById('filtroMaterialGrafico').value;
 
-            let jornadasFiltradas = jornadas.filter(j => {
-                if (anioFiltro !== "todos") {
-                    return j.fecha && j.fecha.startsWith(anioFiltro);
+            // 1. Recopilar todos los años únicos presentes en las jornadas y ordenarlos
+            const aniosSet = new Set();
+            jornadas.forEach(j => {
+                if (j.fecha && j.fecha.length >= 4) {
+                    aniosSet.add(j.fecha.substring(0, 4));
                 }
-                return true;
             });
+            const aniosOrdenados = Array.from(aniosSet).sort();
 
-            let labels = jornadasFiltradas.map((j, idx) => `Jornada ${j.fecha}`);
-            let datos = [];
+            // Si no hay años, poner el año actual por defecto
+            if (aniosOrdenados.length === 0) {
+                aniosOrdenados.push(new Date().getFullYear().toString());
+            }
+
+            let datosPorAnio = [];
             let labelDataset = "Total General (kg)";
             let colorDataset = "#047857";
 
             if (materialFiltro === "todos") {
-                datos = jornadasFiltradas.map(j => {
-                    return Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
+                labelDataset = "Total General Acumulado (kg)";
+                datosPorAnio = aniosOrdenados.map(anio => {
+                    let sumaAnio = 0;
+                    jornadas.forEach(j => {
+                        if (j.fecha && j.fecha.startsWith(anio)) {
+                            sumaAnio += Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
+                        }
+                    });
+                    return sumaAnio;
                 });
             } else {
-                labelDataset = `${materialesMeta[materialFiltro].nombre} (kg)`;
+                labelDataset = `${materialesMeta[materialFiltro].nombre} Anual (kg)`;
                 colorDataset = materialesMeta[materialFiltro].chartColor;
-                datos = jornadasFiltradas.map(j => {
-                    return Number(j.materiales[materialFiltro]) || 0;
+                datosPorAnio = aniosOrdenados.map(anio => {
+                    let sumaAnio = 0;
+                    jornadas.forEach(j => {
+                        if (j.fecha && j.fecha.startsWith(anio)) {
+                            sumaAnio += Number(j.materiales[materialFiltro]) || 0;
+                        }
+                    });
+                    return sumaAnio;
                 });
             }
 
             const ctx = document.getElementById('lineChartCanvas').getContext('2d');
-            if (miGraficoLineas) {
-                miGraficoLineas.destroy();
-            }
+            if (miGraficoLineas) miGraficoLineas.destroy();
 
             miGraficoLineas = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
+                    labels: aniosOrdenados, // Eje X agrupado por AÑOS
                     datasets: [{
                         label: labelDataset,
-                        data: datos,
+                        data: datosPorAnio,
                         borderColor: colorDataset,
                         backgroundColor: colorDataset + '20',
                         borderWidth: 3,
-                        pointRadius: 5,
+                        pointRadius: 6,
                         pointBackgroundColor: colorDataset,
                         fill: true,
-                        tension: 0.3
+                        tension: 0.2
                     }]
                 },
                 options: {
@@ -996,10 +1097,12 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            grid: { color: '#f1f5f9' }
+                            grid: { color: '#f1f5f9' },
+                            title: { display: true, text: 'Cantidad (kg / lts)' }
                         },
                         x: {
-                            grid: { display: false }
+                            grid: { display: false },
+                            title: { display: true, text: 'Año' }
                         }
                     }
                 }
@@ -1034,8 +1137,7 @@
                 `;
             }
 
-            poblarFiltroAniosGrafico();
-            actualizarGraficoLineas();
+            actualizarGraficoLineasAnual();
             actualizarSelectorInformesRapidos();
             renderizarListaInformes(jornadas);
         }
@@ -1203,7 +1305,6 @@
             document.getElementById('pdfJornadaFecha').innerText = j.fecha;
             document.getElementById('pdfJornadaLugar').innerText = j.lugar;
             document.getElementById('pdfJornadaTotal').innerText = totalJornada.toFixed(2) + ' kg';
-
             document.getElementById('pdfJornadaAliados').innerText = j.aliados || 'Multirecicla, Brocicla, Philips y voluntariado comunitario.';
             
             const obsBox = document.getElementById('pdfObservacionesBox');
