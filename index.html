@@ -105,7 +105,7 @@
             </div>
         </div>
 
-        <!-- VISTA PÚBLICA (CONTENEDORES DINÁMICOS ORDENABLES) -->
+        <!-- VISTA PÚBLICA -->
         <div id="vistaPublica" class="space-y-8">
             
             <!-- BLOQUE 1: ACERCA DEL PROGRAMA -->
@@ -125,7 +125,7 @@
                 </div>
             </div>
 
-            <!-- BLOQUE 2: TARJETAS DE RESUMEN (BANNER Y MÉTRICAS) -->
+            <!-- BLOQUE 2: TARJETAS DE RESUMEN -->
             <div id="bloqueTarjetasResumen" class="space-y-6">
                 <div class="bg-gradient-to-r from-emerald-700 to-teal-800 rounded-2xl p-6 md:p-8 text-white shadow-lg flex flex-col md:flex-row justify-between items-center gap-6">
                     <div class="space-y-2 text-center md:text-left">
@@ -539,7 +539,7 @@
         </div>
     </div>
 
-    <!-- PIE DE PÁGINA (FOOTER) CON REDES SOCIALES Y CRÉDITOS -->
+    <!-- PIE DE PÁGINA (FOOTER) -->
     <footer class="bg-white border-t border-slate-200 mt-auto py-8 text-center text-xs text-slate-500 space-y-4">
         <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="space-y-1 text-center md:text-left">
@@ -611,37 +611,6 @@
         let listaAliadosGlobal = ["Multirecicla", "Brocicla", "Philips", "Voluntariado Comunitario"];
         let listaLugaresGlobal = ["Parque El Pilón, Urbanización La Tahona, Municipio Baruta"];
 
-        const jornadasExcelBase = [
-            {
-                fecha: '2025-12-13',
-                lugar: 'Parque El Pilón, Urbanización La Tahona, Municipio Baruta',
-                aliados: 'Multirecicla, Brocicla, Philips y voluntariado comunitario.',
-                observaciones: 'Jornada exitosa con récord de recolección en vidrio y papel.',
-                materiales: { vidrio: 105, plastico: 45, papel: 120, tetrapack: 15, aceite: 4, pilas: 0, aluminio: 2.59, anime: 2, electro: 0 }
-            },
-            {
-                fecha: '2025-11-08',
-                lugar: 'Parque El Pilón, Urbanización La Tahona, Municipio Baruta',
-                aliados: 'Multirecicla, Brocicla y voluntariado.',
-                observaciones: 'Excelente receptividad de los vecinos de La Tahona.',
-                materiales: { vidrio: 70, plastico: 40, papel: 182.5, tetrapack: 3.75, aceite: 0, pilas: 0, aluminio: 1.25, anime: 1.5, electro: 0 }
-            },
-            {
-                fecha: '2025-10-11',
-                lugar: 'Parque El Pilón, Urbanización La Tahona, Municipio Baruta',
-                aliados: 'Multirecicla y Brocicla.',
-                observaciones: 'Se recolectaron materiales especiales como pilas y aceite vegetal.',
-                materiales: { vidrio: 245, plastico: 80, papel: 115, tetrapack: 1, aceite: 8.9, pilas: 8, aluminio: 1.5, anime: 2, electro: 0 }
-            },
-            {
-                fecha: '2025-07-12',
-                lugar: 'Parque El Pilón, Urbanización La Tahona, Municipio Baruta',
-                aliados: 'Multirecicla, Brocicla y comunidad.',
-                observaciones: 'Gran jornada veraniega de reciclaje con participación escolar.',
-                materiales: { vidrio: 175, plastico: 43, papel: 142, tetrapack: 15.7, aceite: 93, pilas: 0, aluminio: 3.75, anime: 3, electro: 0 }
-            }
-        ];
-
         const materialesMeta = {
             vidrio: { nombre: 'Vidrio', color: 'bg-green-600', chartColor: '#16a34a', factorCO2: 0.5 },
             plastico: { nombre: 'Plástico', color: 'bg-amber-400', chartColor: '#fbbf24', factorCO2: 1.5 },
@@ -676,7 +645,8 @@
                 console.error("Error en config:", err);
             });
 
-            const q = query(collection(db, "jornadas"), orderBy("fecha", "asc"));
+            // ORDENADO DE FORMA DESCENDENTE (Lo más reciente primero: Reporte N° 1 es el más nuevo, o numeración ascendente lógica)
+            const q = query(collection(db, "jornadas"), orderBy("fecha", "desc"));
             onSnapshot(q, (snapshot) => {
                 jornadas = [];
                 snapshot.forEach((doc) => {
@@ -697,8 +667,12 @@
         }
 
         window.cargarDatosBaseAdmin = async function() {
-            if (confirm('¿Desea cargar los 4 informes de prueba iniciales en la base de datos?')) {
-                for (const j of jornadasExcelBase) {
+            if (confirm('¿Desea cargar los informes de prueba iniciales en la base de datos?')) {
+                const basePrueba = [
+                    { fecha: '2024-10-11', lugar: 'Parque El Pilón, Urbanización La Tahona, Municipio Baruta', aliados: 'Multirecicla, Brocicla', observaciones: 'Jornada exitosa', materiales: { vidrio: 100, plastico: 50, papel: 100, tetrapack: 10, aceite: 0, pilas: 0, aluminio: 5, anime: 2, electro: 0 } },
+                    { fecha: '2025-02-15', lugar: 'Parque El Pilón, Urbanización La Tahona, Municipio Baruta', aliados: 'Multirecicla, Philips', observaciones: 'Gran participación', materiales: { vidrio: 150, plastico: 70, papel: 120, tetrapack: 15, aceite: 5, pilas: 2, aluminio: 8, anime: 3, electro: 0 } }
+                ];
+                for (const j of basePrueba) {
                     await addDoc(collection(db, "jornadas"), j);
                 }
                 alert('¡Datos de prueba cargados con éxito!');
@@ -706,7 +680,6 @@
         };
 
         function aplicarConfiguracionVisual() {
-            // Textos
             document.getElementById('pubAcercaBadge').innerText = acercaConfig.badge;
             document.getElementById('pubAcercaTitulo').innerText = acercaConfig.titulo;
             document.getElementById('pubAcercaTexto').innerText = acercaConfig.texto;
@@ -724,7 +697,6 @@
                 bloqueAcerca.classList.add('hidden');
             }
 
-            // Sincronizar formulario del admin
             document.getElementById('editAcercaBadge').value = acercaConfig.badge;
             document.getElementById('editAcercaTitulo').value = acercaConfig.titulo;
             document.getElementById('editAcercaTexto').value = acercaConfig.texto;
@@ -735,18 +707,15 @@
             document.getElementById('editLabelCarbono').value = acercaConfig.labelCarbono;
             document.getElementById('editAcercaVisible').checked = acercaConfig.visible;
 
-            // Orden de bloques (Flexbox order)
             document.getElementById('bloqueAcerca').style.order = ordenBloquesConfig.acerca;
             document.getElementById('bloqueTarjetasResumen').style.order = ordenBloquesConfig.tarjetas;
             document.getElementById('bloqueGrafico').style.order = ordenBloquesConfig.grafico;
             document.getElementById('bloqueMaterialesPorcentaje').style.order = ordenBloquesConfig.materiales;
             document.getElementById('bloqueInformesBuscador').style.order = ordenBloquesConfig.informes;
 
-            // Hacer que vistaPublica actúe como contenedor ordenable
             document.getElementById('vistaPublica').style.display = 'flex';
             document.getElementById('vistaPublica').style.flexDirection = 'column';
 
-            // Sincronizar inputs de orden en el admin
             document.getElementById('ordenAcerca').value = ordenBloquesConfig.acerca;
             document.getElementById('ordenTarjetas').value = ordenBloquesConfig.tarjetas;
             document.getElementById('ordenGrafico').value = ordenBloquesConfig.grafico;
@@ -997,7 +966,7 @@
             document.getElementById('selectInformeRapido').value = '';
 
             const filtradas = jornadas.filter((j, index) => {
-                const nroInforme = `reporte n° ${jornadas.length - index}`;
+                const nroInforme = `reporte n° ${index + 1}`;
                 const fechaMatch = fechaFiltro ? j.fecha === fechaFiltro : true;
                 const textoMatch = textoFiltro ? (
                     j.lugar.toLowerCase().includes(textoFiltro) || 
@@ -1017,16 +986,14 @@
             select.innerHTML = `<option value="">-- Todos los informes (${jornadas.length}) --</option>`;
 
             jornadas.forEach((j, index) => {
-                const nro = jornadas.length - index;
+                const nro = index + 1;
                 select.innerHTML += `<option value="${index}">Reporte N° ${nro} - ${j.fecha} (${j.lugar.substring(0, 30)}...)</option>`;
             });
         }
 
-        // GRÁFICO DE LÍNEAS AGRUPADO POR AÑOS Y MATERIALES
         window.actualizarGraficoLineasAnual = function() {
             const materialFiltro = document.getElementById('filtroMaterialGrafico').value;
 
-            // 1. Recopilar todos los años únicos presentes en las jornadas y ordenarlos
             const aniosSet = new Set();
             jornadas.forEach(j => {
                 if (j.fecha && j.fecha.length >= 4) {
@@ -1035,7 +1002,6 @@
             });
             const aniosOrdenados = Array.from(aniosSet).sort();
 
-            // Si no hay años, poner el año actual por defecto
             if (aniosOrdenados.length === 0) {
                 aniosOrdenados.push(new Date().getFullYear().toString());
             }
@@ -1075,7 +1041,7 @@
             miGraficoLineas = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: aniosOrdenados, // Eje X agrupado por AÑOS
+                    labels: aniosOrdenados,
                     datasets: [{
                         label: labelDataset,
                         data: datosPorAnio,
@@ -1158,7 +1124,7 @@
                 contenedorInformes.innerHTML += `
                     <div class="bg-slate-50 border border-slate-200 p-4 rounded-xl flex flex-col justify-between gap-4">
                         <div>
-                            <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Reporte N° ${jornadas.length - realIndex}</span>
+                            <span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">Reporte N° ${realIndex + 1}</span>
                             <h4 class="font-bold text-slate-800 mt-2">${j.lugar}</h4>
                             <p class="text-xs text-slate-500 mt-1"><i class="fa-regular fa-calendar mr-1"></i> ${j.fecha} | Total: ${totalJornada.toFixed(2)} kg</p>
                         </div>
@@ -1300,7 +1266,7 @@
             const j = jornadas[index];
             let totalJornada = Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
 
-            document.getElementById('pdfNroReporte').innerText = `Reporte N° ${jornadas.length - index}`;
+            document.getElementById('pdfNroReporte').innerText = `Reporte N° ${index + 1}`;
             document.getElementById('pdfFechaEmision').innerText = `Fecha de emisión: ${j.fecha}`;
             document.getElementById('pdfJornadaFecha').innerText = j.fecha;
             document.getElementById('pdfJornadaLugar').innerText = j.lugar;
