@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js para gráficos de líneas profesionales -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Librería para generar PDFs -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
@@ -111,10 +113,16 @@
                 <div class="p-4 bg-emerald-50 text-emerald-700 rounded-2xl text-4xl flex-shrink-0">
                     <i class="fa-solid fa-earth-americas"></i>
                 </div>
-                <div class="space-y-2 text-center md:text-left">
+                <div class="space-y-2 text-center md:text-left flex-grow">
                     <span id="pubAcercaBadge" class="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">Acerca del Programa</span>
                     <h2 id="pubAcercaTitulo" class="text-xl md:text-2xl font-bold text-slate-800">Reciclaje con Propósito</h2>
                     <p id="pubAcercaTexto" class="text-sm text-slate-600 leading-relaxed">Transformamos la gestión ambiental en una fuente de trabajo sostenible y educación comunitaria, midiendo el impacto real en la reducción de la huella de carbono en cada jornada.</p>
+                </div>
+                <!-- ENLACE RÁPIDO A LA WEB OFICIAL -->
+                <div class="flex-shrink-0">
+                    <a href="https://www.latierrasecalienta.org" target="_blank" class="px-5 py-3 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-semibold shadow-sm transition flex items-center gap-2">
+                        <i class="fa-solid fa-globe text-sm"></i> Visitar Web Oficial
+                    </a>
                 </div>
             </div>
 
@@ -144,6 +152,45 @@
                         <p class="text-xs text-slate-500 uppercase font-semibold">Impacto: Reducción Huella de Carbono</p>
                         <h3 id="pubHuellaCarbono" class="text-2xl font-bold text-slate-800">0.00 kg CO₂e</h3>
                     </div>
+                </div>
+            </div>
+
+            <!-- GRÁFICO DE LÍNEAS: COMPARACIÓN ANUAL Y POR MATERIAL -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 md:p-8 space-y-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-chart-line text-emerald-600"></i> Comparación Anual y Resultados por Jornada
+                        </h3>
+                        <p class="text-xs text-slate-500">Analiza la evolución de las recolecciones a lo largo del tiempo.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Filtrar por Año:</label>
+                            <select id="filtroAnioGrafico" onchange="actualizarGraficoLineas()" class="px-3 py-1.5 border rounded-lg text-xs bg-white font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                <option value="todos">Todos los Años</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Filtrar Material:</label>
+                            <select id="filtroMaterialGrafico" onchange="actualizarGraficoLineas()" class="px-3 py-1.5 border rounded-lg text-xs bg-white font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                <option value="todos">Total General (Todas las Categorías)</option>
+                                <option value="vidrio">Vidrio</option>
+                                <option value="plastico">Plástico</option>
+                                <option value="papel">Papel y Cartón</option>
+                                <option value="tetrapack">Tetrapack</option>
+                                <option value="aceite">Aceite Vegetal</option>
+                                <option value="pilas">Pilas</option>
+                                <option value="aluminio">Aluminio</option>
+                                <option value="anime">Anime</option>
+                                <option value="electro">Electrodomésticos</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative h-80 w-full">
+                    <canvas id="lineChartCanvas"></canvas>
                 </div>
             </div>
 
@@ -283,7 +330,7 @@
                 </div>
             </div>
 
-            <!-- FORMULARIO DE REGISTRO DE JORNADA CON LUGARES Y ALIADOS MÚLTIPLES -->
+            <!-- FORMULARIO DE REGISTRO DE JORNADA -->
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                 <h3 id="formTitulo" class="text-lg font-bold text-slate-800 mb-4"><i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> Registrar Nueva Jornada</h3>
                 <form id="jornadaForm" onsubmit="guardarJornada(event)" class="space-y-6">
@@ -295,7 +342,6 @@
                             <input type="date" id="inputFecha" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none">
                         </div>
                         
-                        <!-- LUGAR PREDETERMINADO O NUEVO -->
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Lugar de la Jornada:</label>
                             <div class="space-y-2">
@@ -307,15 +353,12 @@
                         </div>
                     </div>
 
-                    <!-- ALIADOS INSTITUCIONALES MÚLTIPLES -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2 border-t">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-1">Aliados Institucionales (Selecciona varios):</label>
                             <p class="text-xs text-slate-500 mb-2">Marca los aliados que participaron o agrega uno nuevo:</p>
                             
-                            <div id="contenedorCheckboxesAliados" class="bg-slate-50 border border-slate-200 rounded-lg p-3 max-h-40 overflow-y-auto space-y-2 mb-3">
-                                <!-- Se llenan dinámicamente -->
-                            </div>
+                            <div id="contenedorCheckboxesAliados" class="bg-slate-50 border border-slate-200 rounded-lg p-3 max-h-40 overflow-y-auto space-y-2 mb-3"></div>
 
                             <div class="flex gap-2">
                                 <input type="text" id="nuevoAliadoInput" placeholder="Agregar nuevo aliado a la lista..." class="w-full px-3 py-1.5 border rounded-lg text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none">
@@ -441,11 +484,33 @@
         </div>
     </div>
 
-    <footer class="bg-white border-t border-slate-200 mt-auto py-6 text-center text-xs text-slate-500">
-        <p>La Tierra se Calienta, A.C. | Depósito Legal: MI2024000503 | <a href="https://www.latierrasecalienta.org" class="text-emerald-600 hover:underline">www.latierrasecalienta.org</a></p>
+    <!-- PIE DE PÁGINA (FOOTER) CON REDES SOCIALES Y CRÉDITOS -->
+    <footer class="bg-white border-t border-slate-200 mt-auto py-8 text-center text-xs text-slate-500 space-y-4">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="space-y-1 text-center md:text-left">
+                <p class="font-bold text-slate-700">La Tierra se Calienta, A.C.</p>
+                <p>Depósito Legal: MI2024000503 | <a href="https://www.latierrasecalienta.org" target="_blank" class="text-emerald-600 hover:underline">www.latierrasecalienta.org</a></p>
+            </div>
+
+            <!-- REDES SOCIALES -->
+            <div class="flex items-center space-x-4">
+                <a href="https://www.instagram.com/latierrasecalienta" target="_blank" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-emerald-600 hover:text-white flex items-center justify-center text-slate-600 transition" title="Instagram">
+                    <i class="fa-brands fa-instagram text-base"></i>
+                </a>
+                <a href="https://twitter.com/tierrasecalienta" target="_blank" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-emerald-600 hover:text-white flex items-center justify-center text-slate-600 transition" title="Twitter / X">
+                    <i class="fa-brands fa-x-twitter text-base"></i>
+                </a>
+                <a href="https://www.facebook.com/latierrasecalienta" target="_blank" class="w-9 h-9 rounded-full bg-slate-100 hover:bg-emerald-600 hover:text-white flex items-center justify-center text-slate-600 transition" title="Facebook">
+                    <i class="fa-brands fa-facebook-f text-base"></i>
+                </a>
+            </div>
+        </div>
+        <div class="border-t border-slate-100 pt-4 text-[11px] text-slate-400">
+            <p>Desarrollado con propósito por <strong class="text-slate-600">Cuyuní Sistemas</strong></p>
+        </div>
     </footer>
 
-    <!-- SCRIPT FIREBASE Y PDF -->
+    <!-- SCRIPT FIREBASE, CHART.JS Y PDF -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getFirestore, collection, doc, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -516,16 +581,18 @@
         ];
 
         const materialesMeta = {
-            vidrio: { nombre: 'Vidrio', color: 'bg-green-600', factorCO2: 0.5 },
-            plastico: { nombre: 'Plástico', color: 'bg-amber-400', factorCO2: 1.5 },
-            papel: { nombre: 'Papel y cartón', color: 'bg-blue-800', factorCO2: 1.2 },
-            tetrapack: { nombre: 'Tetrapack', color: 'bg-purple-600', factorCO2: 1.0 },
-            aceite: { nombre: 'Aceite Vegetal', color: 'bg-slate-900', factorCO2: 2.5 },
-            pilas: { nombre: 'Pilas', color: 'bg-rose-600', factorCO2: 3.0 },
-            aluminio: { nombre: 'Aluminio', color: 'bg-zinc-500', factorCO2: 9.0 },
-            anime: { nombre: 'Anime', color: 'bg-orange-500', factorCO2: 1.8 },
-            electro: { nombre: 'Electrodomésticos', color: 'bg-indigo-600', factorCO2: 2.0 }
+            vidrio: { nombre: 'Vidrio', color: 'bg-green-600', chartColor: '#16a34a', factorCO2: 0.5 },
+            plastico: { nombre: 'Plástico', color: 'bg-amber-400', chartColor: '#fbbf24', factorCO2: 1.5 },
+            papel: { nombre: 'Papel y cartón', color: 'bg-blue-800', chartColor: '#1e40af', factorCO2: 1.2 },
+            tetrapack: { nombre: 'Tetrapack', color: 'bg-purple-600', chartColor: '#9333ea', factorCO2: 1.0 },
+            aceite: { nombre: 'Aceite Vegetal', color: 'bg-slate-900', chartColor: '#0f172a', factorCO2: 2.5 },
+            pilas: { nombre: 'Pilas', color: 'bg-rose-600', chartColor: '#e11d48', factorCO2: 3.0 },
+            aluminio: { nombre: 'Aluminio', color: 'bg-zinc-500', chartColor: '#71717a', factorCO2: 9.0 },
+            anime: { nombre: 'Anime', color: 'bg-orange-500', chartColor: '#f97316', factorCO2: 1.8 },
+            electro: { nombre: 'Electrodomésticos', color: 'bg-indigo-600', chartColor: '#4f46e5', factorCO2: 2.0 }
         };
+
+        let miGraficoLineas = null;
 
         async function iniciarSincronizacionNube() {
             const statusEl = document.getElementById('cloudStatus');
@@ -546,7 +613,7 @@
                 console.error("Error en config:", err);
             });
 
-            const q = query(collection(db, "jornadas"), orderBy("fecha", "desc"));
+            const q = query(collection(db, "jornadas"), orderBy("fecha", "asc"));
             onSnapshot(q, (snapshot) => {
                 jornadas = [];
                 snapshot.forEach((doc) => {
@@ -576,7 +643,6 @@
         };
 
         function renderizarOpcionesFormulario() {
-            // Renderizar selector de lugares
             const selLugar = document.getElementById('selectLugarPredeterminado');
             if (selLugar) {
                 selLugar.innerHTML = `<option value="">-- Seleccionar lugar guardado o escribir abajo --</option>`;
@@ -585,7 +651,6 @@
                 });
             }
 
-            // Renderizar checkboxes de aliados
             const contAliados = document.getElementById('contenedorCheckboxesAliados');
             if (contAliados) {
                 contAliados.innerHTML = '';
@@ -856,6 +921,91 @@
             });
         }
 
+        function poblarFiltroAniosGrafico() {
+            const selectAnio = document.getElementById('filtroAnioGrafico');
+            const aniosDisponibles = new Set();
+            jornadas.forEach(j => {
+                if (j.fecha && j.fecha.length >= 4) {
+                    aniosDisponibles.add(j.fecha.substring(0, 4));
+                }
+            });
+
+            const valorActual = selectAnio.value;
+            selectAnio.innerHTML = `<option value="todos">Todos los Años</option>`;
+            Array.from(aniosDisponibles).sort().forEach(anio => {
+                selectAnio.innerHTML += `<option value="${anio}">${anio}</option>`;
+            });
+            selectAnio.value = aniosDisponibles.has(valorActual) ? valorActual : "todos";
+        }
+
+        window.actualizarGraficoLineas = function() {
+            const anioFiltro = document.getElementById('filtroAnioGrafico').value;
+            const materialFiltro = document.getElementById('filtroMaterialGrafico').value;
+
+            let jornadasFiltradas = jornadas.filter(j => {
+                if (anioFiltro !== "todos") {
+                    return j.fecha && j.fecha.startsWith(anioFiltro);
+                }
+                return true;
+            });
+
+            let labels = jornadasFiltradas.map((j, idx) => `Jornada ${j.fecha}`);
+            let datos = [];
+            let labelDataset = "Total General (kg)";
+            let colorDataset = "#047857";
+
+            if (materialFiltro === "todos") {
+                datos = jornadasFiltradas.map(j => {
+                    return Object.values(j.materiales).reduce((a, b) => a + Number(b), 0);
+                });
+            } else {
+                labelDataset = `${materialesMeta[materialFiltro].nombre} (kg)`;
+                colorDataset = materialesMeta[materialFiltro].chartColor;
+                datos = jornadasFiltradas.map(j => {
+                    return Number(j.materiales[materialFiltro]) || 0;
+                });
+            }
+
+            const ctx = document.getElementById('lineChartCanvas').getContext('2d');
+            if (miGraficoLineas) {
+                miGraficoLineas.destroy();
+            }
+
+            miGraficoLineas = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: labelDataset,
+                        data: datos,
+                        borderColor: colorDataset,
+                        backgroundColor: colorDataset + '20',
+                        borderWidth: 3,
+                        pointRadius: 5,
+                        pointBackgroundColor: colorDataset,
+                        fill: true,
+                        tension: 0.3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        };
+
         function renderVistaPublica() {
             const { totales, granTotal, totalCO2 } = calcularTotalesGenerales();
 
@@ -884,6 +1034,8 @@
                 `;
             }
 
+            poblarFiltroAniosGrafico();
+            actualizarGraficoLineas();
             actualizarSelectorInformesRapidos();
             renderizarListaInformes(jornadas);
         }
@@ -951,13 +1103,11 @@
             const idEdit = document.getElementById('jornadaIdEdit').value;
             const lugarIngresado = document.getElementById('inputLugar').value.trim();
 
-            // Guardar lugar automáticamente en la lista global si es nuevo
             if (lugarIngresado && !listaLugaresGlobal.includes(lugarIngresado)) {
                 listaLugaresGlobal.push(lugarIngresado);
                 await setDoc(doc(db, "configuracion", "general"), { listaLugaresGlobal }, { merge: true });
             }
 
-            // Recopilar aliados seleccionados por checkboxes
             const checks = document.querySelectorAll('.check-aliado:checked');
             let aliadosSeleccionados = Array.from(checks).map(c => c.value);
             let textoAliados = aliadosSeleccionados.join(', ');
@@ -1005,7 +1155,6 @@
             document.getElementById('selectLugarPredeterminado').value = j.lugar;
             document.getElementById('inputObservaciones').value = j.observaciones || '';
             
-            // Marcar checkboxes correspondientes a los aliados guardados
             const checkboxes = document.querySelectorAll('.check-aliado');
             checkboxes.forEach(chk => {
                 if (j.aliados && j.aliados.includes(chk.value)) {
